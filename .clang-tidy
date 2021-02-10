@@ -1,0 +1,21 @@
+---
+Checks: '*,
+    -fuchsia-*,
+    -google-*,
+    -zircon-*,
+    -abseil-*,
+    -llvm*,
+    -cppcoreguidelines-avoid-magic-numbers,
+    -cppcoreguidelines-pro-type-reinterpret-cast,
+    -hicpp-explicit-conversions,
+    -hicpp-uppercase-literal-suffix,
+    -misc-non-private-member-variables-in-classes,
+    -modernize-use-trailing-return-type,
+    -readability-magic-numbers,
+    -readability-uppercase-literal-suffix,
+    -readability-implicit-bool-conversion,
+    -bugprone-exception-escape'
+
+WarningsAsErrors: '*'
+HeaderFilterRegex: ''
+FormatStyle: none
