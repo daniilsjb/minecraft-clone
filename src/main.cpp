@@ -69,22 +69,22 @@ void OnGlfwError(
     [[maybe_unused]] int error,
     [[maybe_unused]] const char* description)
 {
-    std::string_view type;
+    std::cerr << "GLFW::ERROR::";
     switch (error)
     {
-        case GLFW_NOT_INITIALIZED: type = "NOT_INITIALIZED"; break;
-        case GLFW_NO_CURRENT_CONTEXT: type = "NO_CURRENT_CONTEXT"; break;
-        case GLFW_INVALID_ENUM: type = "INVALID_ENUM"; break;
-        case GLFW_INVALID_VALUE: type = "INVALID_VALUE"; break;
-        case GLFW_OUT_OF_MEMORY: type = "OUT_OF_MEMORY"; break;
-        case GLFW_API_UNAVAILABLE: type = "API_UNAVAILABLE"; break;
-        case GLFW_VERSION_UNAVAILABLE: type = "VERSION_UNAVAILABLE"; break;
-        case GLFW_PLATFORM_ERROR: type = "PLATFORM_ERROR"; break;
-        case GLFW_FORMAT_UNAVAILABLE: type = "FORMAT_UNAVAILABLE"; break;
-        default: type = "UNKNOWN"; break;
+        case GLFW_NOT_INITIALIZED: std::cerr << "NOT_INITIALIZED"; break;
+        case GLFW_NO_CURRENT_CONTEXT: std::cerr << "NO_CURRENT_CONTEXT"; break;
+        case GLFW_INVALID_ENUM: std::cerr << "INVALID_ENUM"; break;
+        case GLFW_INVALID_VALUE: std::cerr << "INVALID_VALUE"; break;
+        case GLFW_OUT_OF_MEMORY: std::cerr << "OUT_OF_MEMORY"; break;
+        case GLFW_API_UNAVAILABLE: std::cerr << "API_UNAVAILABLE"; break;
+        case GLFW_VERSION_UNAVAILABLE: std::cerr << "VERSION_UNAVAILABLE"; break;
+        case GLFW_PLATFORM_ERROR: std::cerr << "PLATFORM_ERROR"; break;
+        case GLFW_FORMAT_UNAVAILABLE: std::cerr << "FORMAT_UNAVAILABLE"; break;
+        default: std::cerr << "UNKNOWN"; break;
     }
 
-    std::cerr << "GLFW::ERROR::" << type << ": " << description << '\n';
+    std::cerr << ": " << description << '\n';
 }
 
 void OnOpenGLDebug(
