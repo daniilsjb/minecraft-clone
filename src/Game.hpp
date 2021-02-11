@@ -2,6 +2,7 @@
 
 #include "VertexArray.hpp"
 #include "Shader.hpp"
+#include "Texture.hpp"
 
 class Game
 {
@@ -21,6 +22,8 @@ public:
 private:
     VertexArray m_simpleVAO;
     VertexBuffer m_simpleVBO;
+
+    Texture m_simpleTexture;
 
     Shader m_simpleShader;
 };

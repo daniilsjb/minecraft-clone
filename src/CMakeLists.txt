@@ -11,7 +11,7 @@ add_executable (MinecraftClone
 	"Shader.hpp"
 	"Shader.cpp"
 	"VertexLayout.cpp"
-)
+ "Texture.hpp" "Texture.cpp")
 
 # Link the executable with the libraries
 target_link_libraries(MinecraftClone PRIVATE

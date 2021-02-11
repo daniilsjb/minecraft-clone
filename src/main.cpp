@@ -1,5 +1,6 @@
 ﻿#include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <stb_image.h>
 
 #include <iostream>
 
@@ -53,6 +54,10 @@ int main()
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // stbi_set_flip_vertically_on_load(true);
 
     Game game;
     game.Start();

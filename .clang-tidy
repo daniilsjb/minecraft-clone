@@ -15,6 +15,7 @@ Checks: '*,
     -readability-magic-numbers,
     -readability-uppercase-literal-suffix,
     -readability-implicit-bool-conversion,
+    -readability-isolate-declaration,
     -bugprone-exception-escape'
 
 WarningsAsErrors: '*'
