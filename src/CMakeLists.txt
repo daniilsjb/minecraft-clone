@@ -1,17 +1,13 @@
 ﻿# Add sources to the project's executable
 add_executable (MinecraftClone
 	"main.cpp"
-	"Game.cpp"
-	"Game.hpp"
-	"VertexArray.hpp"
-	"VertexArray.cpp"
-	"VertexBuffer.hpp"
-	"VertexBuffer.cpp"
-	"VertexLayout.hpp"
-	"Shader.hpp"
-	"Shader.cpp"
-	"VertexLayout.cpp"
- "Texture.hpp" "Texture.cpp")
+	"State.hpp"
+)
+
+# Add subdirectories
+add_subdirectory(gfx)
+add_subdirectory(general)
+add_subdirectory(world)
 
 # Link the executable with the libraries
 target_link_libraries(MinecraftClone PRIVATE
