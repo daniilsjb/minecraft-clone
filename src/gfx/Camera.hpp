@@ -12,7 +12,7 @@ struct Camera {
     glm::vec3 up { 0.0f, 0.0f, 0.0f };
     glm::vec3 right { 0.0f, 0.0f, 0.0f };
 
-    float fov { glm::half_pi<float>() };
+    float fov { 90.0f };
     float aspectRatio { 0.0f };
 
     float yaw { 0.0f };
@@ -21,7 +21,7 @@ struct Camera {
     float near { 0.1f };
     float far { 100.0f };
 
-    bool Init(int width, int height);
+    void Init(int width, int height);
     void Update(float dt);
 
     void Resize(int width, int height);

@@ -7,24 +7,50 @@
 
 class Texture {
 public:
-    Texture(const std::string& path);
-    Texture(Texture&& other) noexcept;
+    Texture();
+    Texture(unsigned char* pixels, size_t width, size_t height);
+    explicit Texture(const std::string& path);
+
     ~Texture();
 
+    Texture(const Texture&) = delete;
+    Texture& operator=(const Texture&) = delete;
+
+    Texture(Texture&& other) noexcept;
+    Texture& operator=(Texture&& other) noexcept;
+
+    void Create();
+    void Destroy();
+
+    auto IsCreated() const -> bool;
+
     void Bind() const;
+    void LoadFromPixels(unsigned char* pixels, size_t width, size_t height);
+    void LoadFromPath(const std::string& path);
 
-    unsigned int GetHandle() const;
-    int GetWidth() const;
-    int GetHeight() const;
+    auto GetHandle() const -> unsigned int;
+    auto GetWidth() const -> int;
+    auto GetHeight() const -> int;
+    auto GetSize() const -> glm::ivec2;
 
-protected:
-    unsigned int m_handle { 0 };
-    glm::ivec2 m_size { 0, 0 };
+private:
+    unsigned int m_handle;
+    glm::ivec2 m_size;
 };
 
-struct Atlas : public Texture {
-    glm::ivec2 spriteSize { 16, 16 };
-    glm::ivec2 spriteNum { 16, 16 };
+using AtlasCoords = std::tuple<glm::vec2, glm::vec2>;
 
-    std::tuple<glm::vec2, glm::vec2> GetCoordinates(const glm::ivec2& position) const;
+class Atlas : public Texture {
+public:
+    auto GetCoordinates(const glm::ivec2& position) const -> AtlasCoords;
+
+    auto GetSpriteSize() const -> glm::ivec2;
+    auto GetDimensions() const -> glm::ivec2;
+
+private:
+    // The size of each individual sprite within the atlas
+    glm::ivec2 m_sprite_size { 16, 16 };
+
+    // The number of sprites within the atlas
+    glm::ivec2 m_dimensions { 16, 16 };
 };

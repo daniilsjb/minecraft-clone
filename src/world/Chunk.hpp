@@ -8,41 +8,62 @@
 #include "Block.hpp"
 #include "ChunkMesh.hpp"
 
-constexpr glm::ivec3 CHUNK_SIZE = { 16, 2, 16 };
-constexpr size_t CHUNK_VOLUME = CHUNK_SIZE.x * CHUNK_SIZE.y * CHUNK_SIZE.z;
+template<typename T = glm::ivec3>
+constexpr T chunk_size = T(16, 2, 16);
 
-using BlockFunction = std::function<void(const glm::ivec3& pos, Block block)>;
+constexpr int chunk_volume =
+    chunk_size<>.x *
+    chunk_size<>.y *
+    chunk_size<>.z;
+
+using BlockFunction = std::function<void(const glm::ivec3& position, Block block)>;
 
 class World;
 
 class Chunk {
 public:
-    World* world { nullptr };
+    void Create(World* world, const glm::ivec3& location);
+    void Destroy();
 
-    glm::ivec3 location { 0, 0, 0 };
-    glm::ivec3 position { 0, 0, 0 };
+    auto IsCreated() const -> bool;
 
-    Chunk() = default;
-    Chunk(Chunk&& other) noexcept;
+    void ForEach(const BlockFunction& function) const;
 
-    void Init(World* world);
     void Update();
-    void Render();
+    void PrepareRender();
+    void Render() const;
 
-    bool IsEmpty() const;
-    void Generate(const glm::ivec3& location);
-
-    void ForEach(const BlockFunction& fun) const;
-
-    bool IsWithinBounds(int x, int y, int z) const;
-    bool IsWithinBounds(const glm::ivec3& pos) const;
-
-    Block GetBlock(int x, int y, int z) const;
-    Block GetBlock(const glm::ivec3& pos) const;
+    auto GetBlock(const glm::ivec3& position) const -> Block;
+    auto GetWorld() const -> World*;
+    auto GetOffset() const -> glm::ivec3;
+    auto GetPosition() const -> glm::ivec3;
 
 private:
     std::vector<Block> m_blocks;
     ChunkMesh m_mesh;
 
-    bool m_isEmpty { true };
+    // Absolute position in the chunk coordinate system (in terms of chunks)
+    glm::ivec3 m_offset;
+
+    // Absolute position in the global coordinate system (in terms of unit blocks)
+    glm::ivec3 m_position;
+
+    World* m_world;
+
+    struct {
+        // If true, the mesh has been modified and its mesh must be re-generated
+        bool dirty : 1;
+    } m_flags {};
 };
+
+constexpr auto PositionInChunkBounds(const glm::ivec3& position) -> bool {
+    return (position.x >= 0 && position.x < chunk_size<>.x) &&
+           (position.y >= 0 && position.y < chunk_size<>.y) &&
+           (position.z >= 0 && position.z < chunk_size<>.z);
+}
+
+constexpr auto ChunkPositionToIndex(const glm::ivec3& position) -> int {
+    return position.x * chunk_size<>.y * chunk_size<>.z +
+           position.y * chunk_size<>.z +
+           position.z;
+}

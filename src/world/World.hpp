@@ -1,44 +1,62 @@
 #pragma once
 
-#include <array>
-#include <functional>
+#include <glm/glm.hpp>
 
-#include "../general/Mixins.hpp"
+#include <vector>
+#include <functional>
+#include <optional>
+
 #include "Chunk.hpp"
 #include "Player.hpp"
 
-// The world's dimensions, in chunks, being positioned around the player
-constexpr int WORLD_SIZE_X = 20;
-constexpr int WORLD_SIZE_Z = 20;
+template<typename T = glm::ivec3>
+constexpr T world_size = T(16, 0, 16);
 
-// The total number of chunks in the world
-constexpr int WORLD_AREA = WORLD_SIZE_X * WORLD_SIZE_Z;
+constexpr int world_area =
+    world_size<>.x *
+    world_size<>.z;
 
-using ChunkFunction = std::function<void(const glm::ivec3& location, Chunk& chunk)>;
+template<typename T = glm::ivec3>
+constexpr T world_offset = world_size<T> / T(2);
 
-class World : private NonCopyable, private NonMoveable {
+class World {
 public:
-    Player player;
-    Chunk** chunks { nullptr };
+    void Create();
+    void Destroy();
 
-    glm::ivec3 center { 0, 0, 0 };
-    glm::ivec3 offset { WORLD_SIZE_X / 2, 0, WORLD_SIZE_Z / 2 };
+    auto IsCreated() const -> bool;
 
-    bool Init();
     void Update(float dt);
-    void Render();
+    void PrepareRender();
+    void Render() const;
 
-    glm::ivec3 BlockToChunk(const glm::ivec3& pos) const;
-    glm::ivec3 ChunkToBlock(const glm::ivec3& pos) const;
-    glm::ivec3 ChunkToIndex(const glm::ivec3& pos) const;
+    auto ChunkInBounds(const glm::ivec3& offset) const -> bool;
+    auto BlockInBounds(const glm::ivec3& position) const -> bool;
 
-    bool IsWithinBounds(const glm::ivec3& location) const;
-    bool IsSolidBlock(const glm::ivec3& pos) const;
-
-    void ForEach(const ChunkFunction& fun);
-
-    void SetCenter(const glm::ivec3& pos);
+    auto ChunkIndex(const glm::ivec3& offset) const -> size_t;
+    auto ChunkOffset(const size_t index) const -> glm::ivec3;
+    auto GetChunk(const glm::ivec3& offset) const -> const Chunk*;
 
 private:
-    void LoadEmptyChunks();
+    std::vector<Chunk> m_chunks;
+    glm::ivec3 m_center {};
+
+    Player m_player;
+
+    void CreateMissingChunks();
 };
+
+// world position (float) -> block position
+constexpr auto PositionToBlock(const glm::vec3& position) -> glm::ivec3 {
+    return (glm::ivec3)glm::floor(position);
+}
+
+// world position -> chunk offset
+constexpr auto BlockToOffset(const glm::ivec3& position) -> glm::ivec3 {
+    return (glm::ivec3)glm::floor((glm::vec3)position / chunk_size<glm::vec3>);
+}
+
+// world position -> chunk position
+constexpr auto BlockToChunk(const glm::ivec3& position) -> glm::ivec3 {
+    return ((position % chunk_size<>) + chunk_size<>) % chunk_size<>;
+}

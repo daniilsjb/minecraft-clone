@@ -1,7 +1,4 @@
 #include "ChunkMesh.hpp"
-
-#include <iostream>
-
 #include "../State.hpp"
 #include "../gfx/Renderer.hpp"
 #include "../gfx/VertexLayout.hpp"
@@ -9,22 +6,31 @@
 #include "Chunk.hpp"
 #include "World.hpp"
 
-ChunkMesh::ChunkMesh(Chunk* chunk) :
-    chunk(chunk),
-    vbo(GL_ARRAY_BUFFER),
-    ibo(GL_ELEMENT_ARRAY_BUFFER) {
+void ChunkMesh::Create() {
+    m_vbo.Create(GL_ARRAY_BUFFER);
+    m_ibo.Create(GL_ELEMENT_ARRAY_BUFFER);
+
     VertexLayout layout;
     layout.PushAttribute<float>(3);
     layout.PushAttribute<float>(2);
 
-    vao.SetAttributes(vbo, layout);
+    m_vao.Create();
+    m_vao.Attributes(m_vbo, layout);
+
+    Reset();
 }
 
-void ChunkMesh::Mesh() {
-    vertexCount = 0;
-    indexCount = 0;
+void ChunkMesh::Destroy() {
+    m_vao.Destroy();
+    m_ibo.Destroy();
+    m_vbo.Destroy();
 
-    chunk->ForEach([this](const glm::ivec3& pos, Block block) {
+    Reset();
+}
+
+void ChunkMesh::Mesh(const Chunk& target) {
+    Reset();
+    target.ForEach([this, &target](const glm::ivec3& position, Block block) {
         // No need to mesh air blocks
         if (block.id == BLOCK_AIR) {
             return;
@@ -34,27 +40,32 @@ void ChunkMesh::Mesh() {
         const BlockType& type = Blocks::data[block.id];
 
         // Create and populate the block mesh structure
-        BlockMesh mesh {};
-        mesh.pos = pos;
+        BlockMeshParams mesh {};
+        mesh.position = position;
 
         // Go through each face of the block
         for (int d = 0; d < 6; d++) {
             // Setup the current direction
-            mesh.dir = static_cast<Direction>(d);
+            mesh.direction = static_cast<Direction>(d);
 
             // If the face is obscured by another block, skip it
-            glm::ivec3 neighbor = pos + DirectionToVector(mesh.dir);
-            if (chunk->world->IsSolidBlock((chunk->location * CHUNK_SIZE) + neighbor)) {
+            const glm::ivec3 dir_v = DirectionToVector(mesh.direction);
+            const glm::ivec3 neighbor = target.GetPosition() + position + dir_v;
+
+            const glm::ivec3 offset = BlockToOffset(neighbor);
+            const Chunk* chunk = target.GetWorld()->GetChunk(offset);
+
+            if (chunk != nullptr && chunk->GetBlock(BlockToChunk(neighbor)).id != BLOCK_AIR) {
                 continue;
             }
 
             // Calculate texture coordinates
-            auto [min, max] = State::renderer->atlas.GetCoordinates(type.coords(mesh.dir));
-            mesh.uvMin = min;
-            mesh.uvMax = max;
+            const auto [min, max] = State::renderer->atlas.GetCoordinates(type.coords(mesh.direction));
+            mesh.uv_min = min;
+            mesh.uv_max = max;
 
             // Append the mesh of the block's face to the current chunk mesh
-            mesh.AppendFace(this);
+            mesh.AppendFace(*this);
         }
     });
 
@@ -64,18 +75,30 @@ void ChunkMesh::Mesh() {
 }
 
 void ChunkMesh::Render() const {
-    vao.Bind();
-    ibo.Bind();
+    m_vao.Bind();
+    m_ibo.Bind();
+    glDrawElements(GL_TRIANGLES, m_index_count, GL_UNSIGNED_INT, nullptr);
+}
 
-    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+auto ChunkMesh::GetVertexCount() const -> unsigned int {
+    return m_vertex_count;
+}
+
+auto ChunkMesh::GetIndexCount() const -> unsigned int {
+    return m_index_count;
+}
+
+void ChunkMesh::Reset() {
+    m_vertex_count = 0;
+    m_index_count = 0;
 }
 
 void ChunkMesh::FinalizeVertices() {
-    vbo.Generate(vertices.data(), sizeof(ChunkVertex) * vertices.size());
-    vertices.clear();
+    m_vbo.Buffer(m_vertices.data(), sizeof(ChunkVertex) * m_vertices.size());
+    m_vertices.clear();
 }
 
 void ChunkMesh::FinalizeIndices() {
-    ibo.Generate(indices.data(), sizeof(ChunkIndex) * indices.size());
-    indices.clear();
+    m_ibo.Buffer(m_indices.data(), sizeof(ChunkIndex) * m_indices.size());
+    m_indices.clear();
 }

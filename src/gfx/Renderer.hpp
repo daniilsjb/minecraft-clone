@@ -5,7 +5,6 @@
 #include <array>
 
 #include "../State.hpp"
-#include "../general/Mixins.hpp"
 #include "Camera.hpp"
 #include "Shader.hpp"
 #include "Texture.hpp"
@@ -20,35 +19,35 @@ enum Shaders {
     SHADER_COUNT
 };
 
-class Renderer : private NonCopyable {
+class Renderer {
 public:
+    // The global camera
     Camera camera;
 
-    Atlas atlas { "res/textures/block-atlas.png" };
-    std::array<Shader, SHADER_COUNT> shaders {
-        Shader("res/shaders/quad.vs", "res/shaders/quad.fs"),
-        Shader("res/shaders/plane.vs", "res/shaders/plane.fs"),
-        Shader("res/shaders/chunk.vs", "res/shaders/chunk.fs")
-    };
+    // The block atlas
+    Atlas atlas;
 
-    VertexBuffer vbo, ibo;
-    VertexArray vao;
+    // The array of all available and pre-loaded shaders
+    std::array<Shader, SHADER_COUNT> shaders;
 
-    glm::vec4 clearColor { 0.1f, 0.6f, 0.6f, 1.0f };
+    // Background color used when clearing the screen
+    glm::vec4 clear_color { 0.1f, 0.6f, 0.6f, 1.0f };
 
     struct {
+        // If true, all graphics are drawn in wireframe mode
         bool wireframe : 1;
-    } flags { 0 };
+    } flags {};
 
-    Renderer();
-    ~Renderer();
-
-    bool Init();
+    void Init();
     void Update(float dt);
 
     void Begin() const;
     void End() const;
 
-    void RenderQuad(const glm::vec3& color) const;
-    void RenderPlane(const glm::ivec2& position, const glm::mat4& model) const;
+    void RenderQuad() const;
+    void RenderPlane() const;
+
+private:
+    VertexBuffer m_vbo, m_ibo;
+    VertexArray m_vao;
 };

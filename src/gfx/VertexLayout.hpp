@@ -10,6 +10,9 @@ struct VertexElement {
     unsigned char normalized { 0 };
     unsigned int offset { 0 };
 
+    VertexElement() = default;
+    VertexElement(unsigned int type, unsigned int count, unsigned char normalized, unsigned int offset);
+
     static unsigned int SizeOf(unsigned int type);
 };
 
@@ -72,8 +75,5 @@ private:
     std::vector<VertexElement> m_elements;
     unsigned int m_stride { 0 };
 
-    void PushTypedAttribute(unsigned int type, unsigned int count, unsigned char normalized) {
-        m_elements.emplace_back(type, count, normalized, m_stride);
-        m_stride += count * VertexElement::SizeOf(type);
-    }
+    void PushTypedAttribute(unsigned int type, unsigned int count, unsigned char normalized);
 };

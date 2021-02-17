@@ -6,67 +6,71 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Chunk::Chunk(Chunk&& other) noexcept
-    : m_mesh(std::move(other.m_mesh)) {
-    m_blocks.insert(m_blocks.end(),
-        std::make_move_iterator(other.m_blocks.begin()),
-        std::make_move_iterator(other.m_blocks.end())
-    );
+void Chunk::Create(World* world, const glm::ivec3& offset) {
+    m_blocks.resize(chunk_volume);
+    m_mesh.Create();
+
+    // Temporary world generation
+    std::fill(m_blocks.begin(), m_blocks.end(), Block { BLOCK_GRASS });
+
+    m_flags.dirty = true;
+
+    m_world = world;
+    m_offset = offset;
+    m_position = offset * chunk_size<>;
 }
 
-void Chunk::Init(World* world) {
-    this->world = world;
+void Chunk::Destroy() {
+    m_mesh.Destroy();
+    m_blocks.clear();
+
+    m_flags = {};
 }
 
-void Chunk::Update() {
+auto Chunk::IsCreated() const -> bool {
+    return !m_blocks.empty();
 }
 
-void Chunk::Render() {
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), (glm::vec3)position);
-    State::renderer->shaders[SHADER_CHUNK].SetUniform("u_model", model);
-
-    m_mesh.Render();
-}
-
-bool Chunk::IsEmpty() const {
-    return m_isEmpty;
-}
-
-void Chunk::Generate(const glm::ivec3& location) {
-    this->location = location;
-    this->position = location * CHUNK_SIZE;
-
-    // Temporary solution until real world generation
-    m_blocks.resize(CHUNK_VOLUME);
-    std::fill(m_blocks.begin(), m_blocks.end(), Block { BLOCK_STONE });
-
-    m_mesh.Mesh();
-
-    m_isEmpty = false;
-}
-
-void Chunk::ForEach(const BlockFunction& fun) const {
-    for (int x = 0; x < CHUNK_SIZE.x; x++) {
-        for (int z = 0; z < CHUNK_SIZE.z; z++) {
-            for (int y = 0; y < CHUNK_SIZE.y; y++) {
-                fun({ x, y, z }, GetBlock(x, y, z));
+void Chunk::ForEach(const BlockFunction& function) const {
+    glm::ivec3 position = { 0, 0, 0 };
+    for (position.x = 0; position.x < chunk_size<>.x; position.x++) {
+        for (position.z = 0; position.z < chunk_size<>.z; position.z++) {
+            for (position.y = 0; position.y < chunk_size<>.y; position.y++) {
+                function(position, GetBlock(position));
             }
         }
     }
 }
 
-bool Chunk::IsWithinBounds(int x, int y, int z) const {
-    return (x >= 0 && x < CHUNK_SIZE.x) && (y >= 0 && y < CHUNK_SIZE.y) && (z >= 0 && z < CHUNK_SIZE.z);
+void Chunk::Update() {
 }
 
-bool Chunk::IsWithinBounds(const glm::ivec3& pos) const {
-    return IsWithinBounds(pos.x, pos.y, pos.z);
+void Chunk::PrepareRender() {
+    if (m_flags.dirty) {
+        m_mesh.Mesh(*this);
+        m_flags.dirty = false;
+    }
 }
 
-Block Chunk::GetBlock(int x, int y, int z) const {
-    return m_blocks[x * CHUNK_SIZE.y * CHUNK_SIZE.z + y * CHUNK_SIZE.z + z];
+void Chunk::Render() const {
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), (glm::vec3)m_position);
+    State::renderer->shaders[SHADER_CHUNK].SetUniform("u_model", model);
+
+    m_mesh.Render();
 }
 
-Block Chunk::GetBlock(const glm::ivec3& pos) const {
-    return GetBlock(pos.x, pos.y, pos.z);
+auto Chunk::GetBlock(const glm::ivec3& position) const -> Block {
+    return m_blocks[ChunkPositionToIndex(position)];
+}
+
+auto Chunk::GetWorld() const -> World* {
+    return m_world;
+}
+
+auto Chunk::GetOffset() const -> glm::ivec3 {
+    return m_offset;
+}
+
+auto Chunk::GetPosition() const -> glm::ivec3 {
+    return m_position;
 }

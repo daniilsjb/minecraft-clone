@@ -6,7 +6,6 @@ add_executable (MinecraftClone
 
 # Add subdirectories
 add_subdirectory(gfx)
-add_subdirectory(general)
 add_subdirectory(world)
 
 # Link the executable with the libraries

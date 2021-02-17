@@ -9,23 +9,17 @@ int main() {
     // The main window with OpenGL context
     Window window;
     State::window = &window;
-    if (!window.Init("Minecraft Clone", 1280, 720)) {
-        return EXIT_FAILURE;
-    }
+    window.Create("Minecraft Clone", 1280, 720);
 
     // The renderer and all associated rendering data
     Renderer renderer;
     State::renderer = &renderer;
-    if (!renderer.Init()) {
-        return EXIT_FAILURE;
-    }
+    renderer.Init();
 
     // The world of the game instance
     World world;
     State::world = &world;
-    if (!world.Init()) {
-        return EXIT_FAILURE;
-    }
+    world.Create();
 
     // Start the game
     window.Start();

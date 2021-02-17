@@ -4,15 +4,27 @@
 
 #include <string>
 
-#include "../general/Mixins.hpp"
-
-class Shader : private NonCopyable {
+class Shader {
 public:
-    Shader(const std::string& vertPath, const std::string& fragPath);
-    Shader(Shader&& other) noexcept;
+    Shader() = default;
+    Shader(const std::string& vert_path, const std::string& frag_path);
+
     ~Shader();
 
+    Shader(const Shader&) = delete;
+    Shader& operator=(const Shader&) = delete;
+
+    Shader(Shader&& other) noexcept;
+    Shader& operator=(Shader&& other) noexcept;
+
+    void Create();
+    void Destroy();
+
+    auto IsCreated() const -> bool;
+
     void Bind() const;
+    void LoadFromString(const std::string& vert, const std::string& frag);
+    void LoadFromPath(const std::string& vert_path, const std::string& frag_path);
 
     void SetUniform(const std::string& name, const float value) const;
     void SetUniform(const std::string& name, const int value) const;
@@ -24,13 +36,14 @@ public:
     void SetUniform(const std::string& name, const glm::mat3& value) const;
     void SetUniform(const std::string& name, const glm::mat4& value) const;
 
-    unsigned int GetHandle() const;
+    auto GetHandle() const -> unsigned int;
+    auto GetLocation(const std::string& name) const -> unsigned int;
 
 private:
-    unsigned int CompileShader(unsigned int type, const std::string& source) const;
-    void LinkProgram() const;
-
-    static std::string ReadShaderFile(const std::string& path);
-
     unsigned int m_handle { 0 };
+
+    auto ReadShaderFile(const std::string& path) const -> std::string;
+
+    auto AttachShader(unsigned int type, const std::string& source) const -> unsigned int;
+    void LinkProgram() const;
 };

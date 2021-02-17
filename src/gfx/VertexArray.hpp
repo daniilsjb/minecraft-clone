@@ -1,19 +1,30 @@
 #pragma once
 
-#include "../general/Mixins.hpp"
 #include "VertexBuffer.hpp"
 #include "VertexLayout.hpp"
 
-class VertexArray : private NonCopyable {
+class VertexArray {
 public:
-    VertexArray();
-    VertexArray(VertexArray&& other) noexcept;
+    VertexArray() = default;
+    VertexArray(const VertexBuffer& buffer, const VertexLayout& layout);
+
     ~VertexArray();
 
-    void SetAttributes(const VertexBuffer& buffer, const VertexLayout& layout) const;
-    void Bind() const;
+    VertexArray(const VertexArray&) = delete;
+    VertexArray& operator=(const VertexArray&) = delete;
 
-    unsigned int GetHandle() const;
+    VertexArray(VertexArray&& other) noexcept;
+    VertexArray& operator=(VertexArray&& other) noexcept;
+
+    void Create();
+    void Destroy();
+
+    auto IsCreated() const -> bool;
+
+    void Bind() const;
+    void Attributes(const VertexBuffer& buffer, const VertexLayout& layout) const;
+
+    auto GetHandle() const -> unsigned int;
 
 private:
     unsigned int m_handle { 0 };

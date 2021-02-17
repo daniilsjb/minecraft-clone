@@ -2,22 +2,36 @@
 #include "../State.hpp"
 #include "../gfx/Renderer.hpp"
 
-bool World::Init() {
-    chunks = new Chunk*[WORLD_AREA];
+void World::Create() {
+    m_center = { 0, 0, 0 };
+    m_chunks.resize(world_area);
+    CreateMissingChunks();
 
-    ForEach([this](const glm::ivec3& location, Chunk& chunk) {
-        chunk.Init(this);
-        chunk.Generate(location);
-    });
+    m_player.Init();
+}
 
-    return true;
+void World::Destroy() {
+    m_player.Destroy();
+
+    m_chunks.clear();
+    m_center = { 0, 0, 0 };
+}
+
+auto World::IsCreated() const -> bool {
+    return !m_chunks.empty();
 }
 
 void World::Update(float dt) {
-    player.Update(dt);
+    m_player.Update(dt);
 }
 
-void World::Render() {
+void World::PrepareRender() {
+    for (auto& chunk : m_chunks) {
+        chunk.PrepareRender();
+    }
+}
+
+void World::Render() const {
     State::renderer->shaders[SHADER_CHUNK].Bind();
     State::renderer->shaders[SHADER_CHUNK].SetUniform("u_projection", State::renderer->camera.projection);
     State::renderer->shaders[SHADER_CHUNK].SetUniform("u_view", State::renderer->camera.view);
@@ -25,87 +39,47 @@ void World::Render() {
 
     State::renderer->atlas.Bind();
 
-    for (auto& chunk : chunks) {
+    for (const auto& chunk : m_chunks) {
         chunk.Render();
     }
 }
 
-glm::ivec3 World::BlockToChunk(const glm::ivec3& pos) const {
-    return (glm::ivec3)glm::floor(((glm::vec3)pos / (glm::vec3)CHUNK_SIZE));
+auto World::ChunkInBounds(const glm::ivec3& offset) const -> bool {
+    const glm::ivec3 p = offset - m_center;
+    return (p.x >= 0 && p.x < world_size<>.x) && 
+           (p.y == 0) &&
+           (p.z >= 0 && p.z < world_size<>.z);
 }
 
-glm::ivec3 World::ChunkToBlock(const glm::ivec3& pos) const {
-    return pos * CHUNK_SIZE;
+auto World::BlockInBounds(const glm::ivec3& position) const -> bool {
+    return ChunkInBounds(BlockToOffset(position));
 }
 
-glm::ivec3 World::ChunkToIndex(const glm::ivec3& pos) const {
-    return pos - center + offset;
+auto World::ChunkIndex(const glm::ivec3& offset) const -> size_t {
+    const glm::ivec3 p = offset - m_center;
+    return p.z * chunk_size<>.x + p.x;
 }
 
-bool World::IsWithinBounds(const glm::ivec3& location) const {
-    return (location.x >= 0 && location.x < WORLD_SIZE_X) && (location.z >= 0 && location.z < WORLD_SIZE_Z);
-}
-
-bool World::IsSolidBlock(const glm::ivec3& pos) const {
-    glm::ivec3 location = BlockToChunk(pos);
-    glm::ivec3 index = ChunkToIndex(location);
-
-    if (!IsWithinBounds(index)) {
-        return false;
-    }
-
-    glm::ivec3 block = {
-        pos.x % CHUNK_SIZE.x,
-        pos.y,
-        pos.z % CHUNK_SIZE.z
+auto World::ChunkOffset(const size_t index) const -> glm::ivec3 {
+    return m_center + glm::ivec3 {
+        index % chunk_size<>.x, 0, index / chunk_size<>.z
     };
-
-    const Chunk& chunk = chunks[location.z * WORLD_SIZE_X + location.x];
-    return chunk.IsWithinBounds(block) && chunk.GetBlock(block).id != BLOCK_AIR;
 }
 
-void World::ForEach(const ChunkFunction& fun) {
-    for (int x = 0; x < WORLD_SIZE_X; x++) {
-        for (int z = 0; z < WORLD_SIZE_Z; z++) {
-            fun({ x, 0, z }, chunks[z * WORLD_SIZE_X + x]);
-        }
+auto World::GetChunk(const glm::ivec3& offset) const -> const Chunk* {
+    if (!ChunkInBounds(offset)) {
+        return nullptr;
     }
+
+    return &m_chunks[ChunkIndex(offset)];
 }
 
-void World::SetCenter(const glm::ivec3& pos) {
-    // Calculate the new center chunk position
-    glm::ivec3 newCenter = BlockToChunk(pos);
+void World::CreateMissingChunks() {
+    for (size_t i = 0; i < world_area; i++) {
+        Chunk& chunk = m_chunks[i];
 
-    // Only continue if the center chunk has changed
-    if (newCenter == center) {
-        return;
-    }
-
-    // Put the world center into a new position
-    center = newCenter;
-
-    // Now go through each chunk, calculate the difference between its location and the center, and determine if it should
-    // still be within the grid
-    for (auto& chunk : chunks) {
-        // Calculate the location of the chunk within the world's bounds
-        glm::ivec3 location = ChunkToIndex(chunk.location);
-        if (IsWithinBounds(location)) {
-            // Move the chunk to another cell in the grid, since everything has moved now
-        } else {
-            // The chunk can simply be removed since it is out of bounds now
+        if (!chunk.IsCreated()) {
+            chunk.Create(this, ChunkOffset(i));
         }
     }
-
-    // Load the newly moved chunks
-    LoadEmptyChunks();
-}
-
-void World::LoadEmptyChunks() {
-    ForEach([this](const glm::ivec3& location, Chunk& chunk) {
-        if (!chunk.IsEmpty()) {
-            return;
-        }
-
-        chunk.Generate(this->center + location);
-    });
 }

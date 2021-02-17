@@ -23,7 +23,6 @@ enum BlockId {
 // Static information about each block type
 struct BlockType {
     BlockId id;
-
     std::function<glm::ivec2(Direction)> coords;
 };
 

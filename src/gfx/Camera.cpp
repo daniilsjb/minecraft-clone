@@ -2,9 +2,8 @@
 
 #include <algorithm>
 
-bool Camera::Init(int width, int height) {
+void Camera::Init(int width, int height) {
     Resize(width, height);
-    return true;
 }
 
 void Camera::Update(float dt) {
@@ -19,10 +18,10 @@ void Camera::Update(float dt) {
     direction = glm::normalize(direction);
 
     right = glm::normalize(glm::cross(direction, glm::vec3(0.0f, 1.0f, 0.0f)));
-    up = glm::normalize(glm::cross(right, direction));
+    up    = glm::normalize(glm::cross(right, direction));
 
-    projection = glm::perspective(fov, aspectRatio, near, far);
-    view = glm::lookAt(position, position + direction, up);
+    projection = glm::perspective(glm::radians(fov), aspectRatio, near, far);
+    view       = glm::lookAt(position, position + direction, up);
 }
 
 void Camera::Resize(int width, int height) {

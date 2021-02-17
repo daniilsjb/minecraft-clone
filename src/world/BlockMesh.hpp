@@ -1,15 +1,19 @@
 #pragma once
 
-#include "Block.hpp"
+#include "Direction.hpp"
 
 class ChunkMesh;
 
-struct BlockMesh {
-    glm::vec3 pos;
-    Direction dir;
+struct BlockMeshParams {
+    // Block's position in chunk space
+    glm::vec3 position {};
 
-    glm::vec2 uvMin;
-    glm::vec2 uvMax;
+    // Direction of the block's current face
+    Direction direction {};
 
-	void AppendFace(ChunkMesh* target);
+    // Coordinate extremes of the face's texture within the block atlas
+    glm::vec2 uv_min {};
+    glm::vec2 uv_max {};
+
+	void AppendFace(ChunkMesh& target);
 };

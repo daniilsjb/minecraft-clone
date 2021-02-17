@@ -11,31 +11,38 @@ class Chunk;
 
 struct ChunkVertex {
     glm::vec3 position;
-    glm::vec2 texCoords;
+    glm::vec2 tex_coords;
 };
 
 struct ChunkIndex {
     unsigned int index;
 };
 
-struct ChunkMesh {
-    Chunk* chunk { nullptr };
+class ChunkMesh {
+public:
+    void Create();
+    void Destroy();
 
-    std::vector<ChunkVertex> vertices;
-    std::vector<ChunkIndex> indices;
-
-    unsigned int vertexCount { 0 };
-    unsigned int indexCount { 0 };
-
-    VertexBuffer vbo, ibo;
-    VertexArray vao;
-
-    ChunkMesh(Chunk* chunk);
-
-    void Mesh();
+    void Mesh(const Chunk& target);
     void Render() const;
 
+    auto GetVertexCount() const -> unsigned int;
+    auto GetIndexCount() const -> unsigned int;
+
+    friend struct BlockMeshParams;
+
 private:
+    std::vector<ChunkVertex> m_vertices;
+    std::vector<ChunkIndex> m_indices;
+
+    unsigned int m_vertex_count { 0 };
+    unsigned int m_index_count { 0 };
+
+    VertexBuffer m_vbo, m_ibo;
+    VertexArray m_vao;
+
+    void Reset();
+
     void FinalizeVertices();
     void FinalizeIndices();
 };

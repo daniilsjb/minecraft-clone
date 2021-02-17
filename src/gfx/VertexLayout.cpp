@@ -1,7 +1,5 @@
 #include "VertexLayout.hpp"
 
-VertexElement::VertexElement() = default;
-
 VertexElement::VertexElement(unsigned int type, unsigned int count, unsigned char normalized, unsigned int offset) :
     type(type), count(count), normalized(normalized), offset(offset) {
 }
@@ -18,4 +16,9 @@ unsigned int VertexElement::SizeOf(unsigned int type) {
         case GL_DOUBLE: return sizeof(double);
         default: return 0;
     }
+}
+
+void VertexLayout::PushTypedAttribute(unsigned int type, unsigned int count, unsigned char normalized) {
+    m_elements.emplace_back(type, count, normalized, m_stride);
+    m_stride += count * VertexElement::SizeOf(type);
 }

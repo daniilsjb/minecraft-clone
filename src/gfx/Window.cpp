@@ -124,12 +124,15 @@ bool Mouse::IsReleased(unsigned int id) const {
     return buttons[id].released;
 }
 
-Window::~Window() {
-    glfwDestroyWindow(m_handle);
-    glfwTerminate();
+Window::Window(const std::string& name, int width, int height) {
+    Create(name, width, height);
 }
 
-bool Window::Init(const std::string& name, int width, int height) {
+Window::~Window() {
+    Destroy();
+}
+
+void Window::Create(const std::string& name, int width, int height) {
     m_width = width;
     m_height = height;
 
@@ -144,14 +147,12 @@ bool Window::Init(const std::string& name, int width, int height) {
 
     m_handle = glfwCreateWindow(m_width, m_height, name.c_str(), nullptr, nullptr);
     if (m_handle == nullptr) {
-        std::cerr << "[Window] Could not create an instance\n";
-        return false;
+        throw std::runtime_error("Could not create a window");
     }
 
     glfwMakeContextCurrent(m_handle);
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-        std::cerr << "[GLAD] Could not load symbols\n";
-        return false;
+        throw std::runtime_error("Could not load symbols via GLAD");
     }
 
     glEnable(GL_DEBUG_OUTPUT);
@@ -166,11 +167,14 @@ bool Window::Init(const std::string& name, int width, int height) {
     glfwSetMouseButtonCallback(m_handle, OnMouseCallback);
 
     glfwSetInputMode(m_handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwGetCursorPos(m_handle, &mouse.posX, &mouse.posY);
+    glfwGetCursorPos(m_handle, &mouse.pos.x, &mouse.pos.y);
 
     glfwSwapInterval(1);
+}
 
-    return true;
+void Window::Destroy() {
+    glfwDestroyWindow(m_handle);
+    glfwTerminate();
 }
 
 void Window::Start() {
@@ -187,10 +191,13 @@ void Window::Start() {
         State::renderer->Update(dt);
         State::world->Update(dt);
 
+        State::world->PrepareRender();
+
         State::renderer->Begin();
         State::world->Render();
-        // State::renderer->RenderCube();
         State::renderer->End();
+
+        mouse.delta = { 0.0f, 0.0f };
 
         glfwSwapBuffers(m_handle);
         glfwPollEvents();
@@ -204,27 +211,6 @@ void Window::Update(float dt) {
     if (keyboard.IsPressed(GLFW_KEY_ESCAPE)) {
         glfwSetWindowShouldClose(m_handle, true);
     }
-
-    float movementSpeed = 2.5f;
-    if (keyboard.IsDown(GLFW_KEY_W)) {
-        State::renderer->camera.position += State::renderer->camera.direction * dt * movementSpeed;
-    }
-    if (keyboard.IsDown(GLFW_KEY_S)) {
-        State::renderer->camera.position -= State::renderer->camera.direction * dt * movementSpeed;
-    }
-    if (keyboard.IsDown(GLFW_KEY_A)) {
-        State::renderer->camera.position -= State::renderer->camera.right * dt * movementSpeed;
-    }
-    if (keyboard.IsDown(GLFW_KEY_D)) {
-        State::renderer->camera.position += State::renderer->camera.right * dt * movementSpeed;
-    }
-
-    float mouseSensitivity = 0.5f;
-    State::renderer->camera.yaw += mouse.deltaX * mouseSensitivity;
-    State::renderer->camera.pitch -= mouse.deltaY * mouseSensitivity;
-
-    mouse.deltaX = 0.0;
-    mouse.deltaY = 0.0;
 }
 
 void Window::OnResize(GLFWwindow* handle, int width, int height) {
@@ -248,12 +234,11 @@ void Window::OnKey(GLFWwindow* handle, int key, int scancode, int action, int mo
 }
 
 void Window::OnCursor(GLFWwindow* handle, double x, double y) {
-    // Accumulate the delta between callback invocations
-    mouse.deltaX += x - mouse.posX;
-    mouse.deltaY += y - mouse.posY;
+    glm::dvec2 new_pos = { x, y };
 
-    mouse.posX = x;
-    mouse.posY = y;
+    // Accumulate the delta between callback invocations
+    mouse.delta += new_pos - mouse.pos;
+    mouse.pos = new_pos;
 }
 
 void Window::OnMouse(GLFWwindow* handle, int button, int action, int mods) {
@@ -268,14 +253,14 @@ void Window::OnMouse(GLFWwindow* handle, int button, int action, int mods) {
     }
 }
 
-GLFWwindow* Window::GetHandle() const {
+auto Window::GetHandle() const -> GLFWwindow* {
     return m_handle;
 }
 
-int Window::GetWidth() const {
+auto Window::GetWidth() const -> int {
     return m_width;
 }
 
-int Window::GetHeight() const {
+auto Window::GetHeight() const -> int {
     return m_height;
 }

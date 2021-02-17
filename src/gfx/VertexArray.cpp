@@ -1,19 +1,48 @@
 #include "VertexArray.hpp"
 
-VertexArray::VertexArray() {
-    glGenVertexArrays(1, &m_handle);
-}
-
-VertexArray::VertexArray(VertexArray&& other) noexcept :
-    m_handle(other.m_handle) {
-    other.m_handle = 0;
+VertexArray::VertexArray(const VertexBuffer& buffer, const VertexLayout& layout) {
+    Create();
+    Attributes(buffer, layout);
 }
 
 VertexArray::~VertexArray() {
-    glDeleteVertexArrays(1, &m_handle);
+    Destroy();
 }
 
-void VertexArray::SetAttributes(const VertexBuffer& buffer, const VertexLayout& layout) const {
+VertexArray::VertexArray(VertexArray&& other) noexcept
+    : m_handle(other.m_handle) {
+    other.m_handle = 0;
+}
+
+VertexArray& VertexArray::operator=(VertexArray&& other) noexcept {
+    if (this != &other) {
+        Destroy();
+
+        m_handle = other.m_handle;
+        other.m_handle = 0;
+    }
+
+    return *this;
+}
+
+void VertexArray::Create() {
+    glGenVertexArrays(1, &m_handle);
+}
+
+void VertexArray::Destroy() {
+    glDeleteVertexArrays(1, &m_handle);
+    m_handle = 0;
+}
+
+auto VertexArray::IsCreated() const -> bool {
+    return m_handle != 0;
+}
+
+void VertexArray::Bind() const {
+    glBindVertexArray(m_handle);
+}
+
+void VertexArray::Attributes(const VertexBuffer& buffer, const VertexLayout& layout) const {
     Bind();
     buffer.Bind();
 
@@ -25,10 +54,6 @@ void VertexArray::SetAttributes(const VertexBuffer& buffer, const VertexLayout& 
     }
 }
 
-void VertexArray::Bind() const {
-    glBindVertexArray(m_handle);
-}
-
-unsigned int VertexArray::GetHandle() const {
+auto VertexArray::GetHandle() const -> unsigned int {
     return m_handle;
 }

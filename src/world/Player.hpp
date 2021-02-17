@@ -1,12 +1,11 @@
 #pragma once
 
-#include "../general/Mixins.hpp"
-
-class Player : private NonCopyable {
+class Player {
 public:
-    float movementSpeed { 2.5f };
-    float mouseSensitivity { 0.1f };
+    float movementSpeed { 5.0f };
+    float mouseSensitivity { 0.2f };
 
-    bool Init();
+    void Init();
     void Update(float dt);
+    void Destroy();
 };
