@@ -3,11 +3,10 @@
 #include "../gfx/Renderer.hpp"
 
 void World::Create() {
-    m_center = { 0, 0, 0 };
-    m_chunks.resize(world_area);
-    CreateMissingChunks();
-
     m_player.Init();
+
+    m_chunks.resize(world_area);
+    SetCenter(State::renderer->camera.position);
 }
 
 void World::Destroy() {
@@ -44,10 +43,36 @@ void World::Render() const {
     }
 }
 
+void World::SetCenter(const glm::ivec3& position) {
+    // Find the chunk containing new world center
+    glm::ivec3 new_offset = BlockToOffset(position);
+    glm::ivec3 new_center = new_offset - world_offset;
+
+    // If didn't move, nothing needs to change
+    if (m_center == new_center) {
+        return;
+    }
+    m_center = new_center;
+
+    // Move old chunks into another vector and setup a new collection of chunks
+    std::vector<Chunk> old;
+    m_chunks.swap(old);
+    m_chunks.resize(world_area);
+
+    // Move old chunks back into the new set if they are still in bounds
+    for (auto& chunk : old) {
+        if (chunk.IsCreated() && ChunkInBounds(chunk.GetOffset())) {
+            m_chunks[ChunkIndex(chunk.GetOffset())] = std::move(chunk);
+        }
+    }
+
+    // Everything else needs to be created manually
+    CreateMissingChunks();
+}
+
 auto World::ChunkInBounds(const glm::ivec3& offset) const -> bool {
     const glm::ivec3 p = offset - m_center;
     return (p.x >= 0 && p.x < world_size<>.x) && 
-           (p.y == 0) &&
            (p.z >= 0 && p.z < world_size<>.z);
 }
 
@@ -57,7 +82,7 @@ auto World::BlockInBounds(const glm::ivec3& position) const -> bool {
 
 auto World::ChunkIndex(const glm::ivec3& offset) const -> size_t {
     const glm::ivec3 p = offset - m_center;
-    return p.z * chunk_size<>.x + p.x;
+    return (size_t)p.z * (size_t)chunk_size<>.x + (size_t)p.x;
 }
 
 auto World::ChunkOffset(const size_t index) const -> glm::ivec3 {

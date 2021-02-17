@@ -16,8 +16,11 @@ constexpr int world_area =
     world_size<>.x *
     world_size<>.z;
 
-template<typename T = glm::ivec3>
-constexpr T world_offset = world_size<T> / T(2);
+constexpr auto world_offset = glm::ivec3 {
+    world_size<>.x / 2,
+    0,
+    world_size<>.z / 2
+};
 
 class World {
 public:
@@ -29,6 +32,8 @@ public:
     void Update(float dt);
     void PrepareRender();
     void Render() const;
+
+    void SetCenter(const glm::ivec3& position);
 
     auto ChunkInBounds(const glm::ivec3& offset) const -> bool;
     auto BlockInBounds(const glm::ivec3& position) const -> bool;
@@ -53,7 +58,11 @@ constexpr auto PositionToBlock(const glm::vec3& position) -> glm::ivec3 {
 
 // world position -> chunk offset
 constexpr auto BlockToOffset(const glm::ivec3& position) -> glm::ivec3 {
-    return (glm::ivec3)glm::floor((glm::vec3)position / chunk_size<glm::vec3>);
+    return glm::ivec3 {
+        (int)std::floorf((float)position.x / chunk_size<glm::vec3>.x),
+        (int)0,
+        (int)std::floorf((float)position.z / chunk_size<glm::vec3>.z),
+    };
 }
 
 // world position -> chunk position

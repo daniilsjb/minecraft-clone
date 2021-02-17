@@ -7,7 +7,7 @@ struct Camera {
     glm::mat4 projection;
     glm::mat4 view;
 
-    glm::vec3 position { 0.0f, 0.0f, 0.0f };
+    glm::vec3 position { 0.0f, 4.0f, 0.0f };
     glm::vec3 direction { 0.0f, 0.0f, 0.0f };
     glm::vec3 up { 0.0f, 0.0f, 0.0f };
     glm::vec3 right { 0.0f, 0.0f, 0.0f };

@@ -52,11 +52,13 @@ void ChunkMesh::Mesh(const Chunk& target) {
             const glm::ivec3 dir_v = DirectionToVector(mesh.direction);
             const glm::ivec3 neighbor = target.GetPosition() + position + dir_v;
 
-            const glm::ivec3 offset = BlockToOffset(neighbor);
-            const Chunk* chunk = target.GetWorld()->GetChunk(offset);
+            if (neighbor.y >= 0 && neighbor.y < chunk_size<>.y) {
+                const glm::ivec3 offset = BlockToOffset(neighbor);
+                const Chunk* chunk = target.GetWorld()->GetChunk(offset);
 
-            if (chunk != nullptr && chunk->GetBlock(BlockToChunk(neighbor)).id != BLOCK_AIR) {
-                continue;
+                if (chunk != nullptr && chunk->GetBlock(BlockToChunk(neighbor)).id != BLOCK_AIR) {
+                    continue;
+                }
             }
 
             // Calculate texture coordinates
