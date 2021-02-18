@@ -5,7 +5,7 @@
 #include <array>
 #include <functional>
 
-#include "Direction.hpp"
+#include "../general/Direction.hpp"
 
 // Unique identifier for each block type
 enum BlockId {
@@ -73,5 +73,5 @@ struct Blocks {
 
 // Block instance as stored in chunks
 struct Block {
-    BlockId id;
+    unsigned int id;
 };

@@ -80,6 +80,18 @@ auto World::BlockInBounds(const glm::ivec3& position) const -> bool {
     return ChunkInBounds(BlockToOffset(position));
 }
 
+auto World::ContainsChunk(const glm::ivec3& offset) const -> bool {
+    if (!ChunkInBounds(offset)) {
+        return false;
+    }
+
+    return m_chunks[ChunkIndex(offset)].IsCreated();
+}
+
+auto World::Contains(const glm::ivec3& position) const -> bool {
+    return ContainsChunk(BlockToOffset(position));
+}
+
 auto World::ChunkIndex(const glm::ivec3& offset) const -> size_t {
     const glm::ivec3 p = offset - m_center;
     return (size_t)p.z * (size_t)chunk_size<>.x + (size_t)p.x;
@@ -91,12 +103,27 @@ auto World::ChunkOffset(const size_t index) const -> glm::ivec3 {
     };
 }
 
-auto World::GetChunk(const glm::ivec3& offset) const -> const Chunk* {
-    if (!ChunkInBounds(offset)) {
-        return nullptr;
+auto World::GetBlock(const glm::ivec3& position) const -> Block {
+    const glm::ivec3 offset = BlockToOffset(position);
+    if (position.y >= 0 && position.y < chunk_size<>.y && ContainsChunk(offset)) {
+        return GetChunk(offset).GetBlock(BlockToChunk(position));
     }
+    return { BLOCK_AIR };
+}
 
-    return &m_chunks[ChunkIndex(offset)];
+void World::SetBlock(const glm::ivec3& position, Block block) {
+    const glm::ivec3 offset = BlockToOffset(position);
+    if (position.y >= 0 && position.y < chunk_size<>.y && ContainsChunk(offset)) {
+        m_chunks[ChunkIndex(offset)].SetBlock(BlockToChunk(position), block);
+    }
+}
+
+auto World::GetChunk(const glm::ivec3& offset) const -> const Chunk& {
+    return m_chunks[ChunkIndex(offset)];
+}
+
+auto World::GetChunk(const glm::ivec3& offset) -> Chunk& {
+    return m_chunks[ChunkIndex(offset)];
 }
 
 void World::CreateMissingChunks() {

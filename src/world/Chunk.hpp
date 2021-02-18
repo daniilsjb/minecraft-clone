@@ -9,7 +9,7 @@
 #include "ChunkMesh.hpp"
 
 template<typename T = glm::ivec3>
-constexpr T chunk_size = T(16, 2, 16);
+constexpr T chunk_size = T(16, 8, 16);
 
 constexpr int chunk_volume =
     chunk_size<>.x *
@@ -34,6 +34,8 @@ public:
     void Render() const;
 
     auto GetBlock(const glm::ivec3& position) const -> Block;
+    void SetBlock(const glm::ivec3& position, Block block);
+
     auto GetWorld() const -> World*;
     auto GetOffset() const -> glm::ivec3;
     auto GetPosition() const -> glm::ivec3;
@@ -54,6 +56,8 @@ private:
         // If true, the mesh has been modified and its mesh must be re-generated
         bool dirty : 1;
     } m_flags {};
+
+    void GetBorderingChunks(const glm::ivec3& position, Chunk* dest[2]);
 };
 
 constexpr auto PositionInChunkBounds(const glm::ivec3& position) -> bool {

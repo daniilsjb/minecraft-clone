@@ -11,7 +11,14 @@ void Chunk::Create(World* world, const glm::ivec3& offset) {
     m_mesh.Create();
 
     // Temporary world generation
-    std::fill(m_blocks.begin(), m_blocks.end(), Block { BLOCK_GRASS });
+    glm::ivec3 position = { 0, 0, 0 };
+    for (position.x = 0; position.x < chunk_size<>.x; position.x++) {
+        for (position.z = 0; position.z < chunk_size<>.z; position.z++) {
+            for (position.y = 0; position.y < chunk_size<>.y; position.y++) {
+                m_blocks[ChunkPositionToIndex(position)].id = (position.y == chunk_size<>.y - 1) ? BLOCK_GRASS : BLOCK_DIRT;
+            }
+        }
+    }
 
     m_flags.dirty = true;
 
@@ -63,6 +70,21 @@ auto Chunk::GetBlock(const glm::ivec3& position) const -> Block {
     return m_blocks[ChunkPositionToIndex(position)];
 }
 
+void Chunk::SetBlock(const glm::ivec3& position, Block block) {
+    m_blocks[ChunkPositionToIndex(position)] = block;
+    m_flags.dirty = true;
+
+    Chunk* chunks[2] = { nullptr, nullptr };
+    GetBorderingChunks(position, chunks);
+
+    if (chunks[0] != nullptr) {
+        chunks[0]->m_flags.dirty = true;
+    }
+    if (chunks[1] != nullptr) {
+        chunks[1]->m_flags.dirty = true;
+    }
+}
+
 auto Chunk::GetWorld() const -> World* {
     return m_world;
 }
@@ -73,4 +95,33 @@ auto Chunk::GetOffset() const -> glm::ivec3 {
 
 auto Chunk::GetPosition() const -> glm::ivec3 {
     return m_position;
+}
+
+void Chunk::GetBorderingChunks(const glm::ivec3& position, Chunk* dest[2]) {
+    size_t current = 0;
+
+    if (position.x == 0) {
+        glm::ivec3 offset = m_offset + glm::ivec3 { -1, 0, 0 };
+        if (m_world->ContainsChunk(offset)) {
+            dest[current++] = &m_world->GetChunk(offset);
+        }
+    }
+    if (position.x == chunk_size<>.x - 1) {
+        glm::ivec3 offset = m_offset + glm::ivec3 { 1, 0, 0 };
+        if (m_world->ContainsChunk(offset)) {
+            dest[current++] = &m_world->GetChunk(offset);
+        }
+    }
+    if (position.z == 0) {
+        glm::ivec3 offset = m_offset + glm::ivec3 { 0, 0, -1 };
+        if (m_world->ContainsChunk(offset)) {
+            dest[current++] = &m_world->GetChunk(offset);
+        }
+    }
+    if (position.z == chunk_size<>.z - 1) {
+        glm::ivec3 offset = m_offset + glm::ivec3 { 0, 0, 1 };
+        if (m_world->ContainsChunk(offset)) {
+            dest[current++] = &m_world->GetChunk(offset);
+        }
+    }
 }

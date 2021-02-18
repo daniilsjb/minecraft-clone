@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <functional>
-#include <optional>
 
 #include "Chunk.hpp"
 #include "Player.hpp"
@@ -38,9 +37,17 @@ public:
     auto ChunkInBounds(const glm::ivec3& offset) const -> bool;
     auto BlockInBounds(const glm::ivec3& position) const -> bool;
 
+    auto ContainsChunk(const glm::ivec3& offset) const -> bool;
+    auto Contains(const glm::ivec3& position) const -> bool;
+
     auto ChunkIndex(const glm::ivec3& offset) const -> size_t;
     auto ChunkOffset(const size_t index) const -> glm::ivec3;
-    auto GetChunk(const glm::ivec3& offset) const -> const Chunk*;
+
+    auto GetBlock(const glm::ivec3& position) const -> Block;
+    void SetBlock(const glm::ivec3& position, Block block);
+
+    auto GetChunk(const glm::ivec3& offset) const -> const Chunk&;
+    auto GetChunk(const glm::ivec3& offset) -> Chunk&;
 
 private:
     std::vector<Chunk> m_chunks;

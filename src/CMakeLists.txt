@@ -2,11 +2,12 @@
 add_executable (MinecraftClone
 	"main.cpp"
 	"State.hpp"
-)
+ "general/Ray.cpp")
 
 # Add subdirectories
 add_subdirectory(gfx)
 add_subdirectory(world)
+add_subdirectory(general)
 
 # Link the executable with the libraries
 target_link_libraries(MinecraftClone PRIVATE

@@ -10,5 +10,4 @@ target_sources(MinecraftClone PRIVATE
 	"Player.hpp"
 	"World.cpp"
 	"World.hpp"
-	"Direction.hpp"
 )
