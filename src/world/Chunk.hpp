@@ -9,7 +9,7 @@
 #include "ChunkMesh.hpp"
 
 template<typename T = glm::ivec3>
-constexpr T chunk_size = T(16, 8, 16);
+constexpr T chunk_size = T(16, 256, 16);
 
 constexpr int chunk_volume =
     chunk_size<>.x *

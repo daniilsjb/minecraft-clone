@@ -2,7 +2,7 @@
 add_executable (MinecraftClone
 	"main.cpp"
 	"State.hpp"
- "general/Ray.cpp")
+)
 
 # Add subdirectories
 add_subdirectory(gfx)
@@ -15,6 +15,7 @@ target_link_libraries(MinecraftClone PRIVATE
 	glad ${CMAKE_DL_LIBS}
 	glm
 	stb-image
+	perlin-noise
 )
 
 # Configure GLFW

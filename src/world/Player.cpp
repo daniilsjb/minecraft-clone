@@ -36,16 +36,16 @@ void Player::Update(float dt) {
     }
 
     if (State::window->keyboard.IsPressed(GLFW_KEY_LEFT)) {
-        selectedBlock.id++;
-        if (selectedBlock.id == BLOCK_COUNT) {
-            selectedBlock.id = BLOCK_AIR + 1;
+        selectedBlock.id--;
+        if (selectedBlock.id == BLOCK_AIR) {
+            selectedBlock.id = BLOCK_COUNT - 1;
         }
     }
 
     if (State::window->keyboard.IsPressed(GLFW_KEY_RIGHT)) {
-        selectedBlock.id--;
-        if (selectedBlock.id == BLOCK_AIR) {
-            selectedBlock.id = BLOCK_COUNT - 1;
+        selectedBlock.id++;
+        if (selectedBlock.id == BLOCK_COUNT) {
+            selectedBlock.id = BLOCK_AIR + 1;
         }
     }
 

@@ -17,6 +17,8 @@ enum BlockId {
     BLOCK_STONE,
     BLOCK_LEAVES,
     BLOCK_OAK,
+    BLOCK_SAND,
+    BLOCK_WATER,
     BLOCK_COUNT
 };
 
@@ -67,6 +69,14 @@ struct Blocks {
                  case DOWN: return { 8, 0 };
                  default: return { 7, 0 };
              }
+        }},
+
+        { BLOCK_SAND, [](Direction d) -> glm::ivec2 {
+             return { 9, 0 };
+        }},
+
+        { BLOCK_WATER, [](Direction d) -> glm::ivec2 {
+             return { 10, 0 };
         }},
     }};
 };

@@ -6,6 +6,8 @@ target_sources(MinecraftClone PRIVATE
 	"Chunk.hpp"
 	"ChunkMesh.cpp"
 	"ChunkMesh.hpp"
+	"Generator.cpp"
+	"Generator.hpp"
 	"Player.cpp"
 	"Player.hpp"
 	"World.cpp"

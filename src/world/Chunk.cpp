@@ -2,6 +2,7 @@
 #include "../State.hpp"
 #include "../gfx/Renderer.hpp"
 #include "World.hpp"
+#include "Generator.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -10,21 +11,11 @@ void Chunk::Create(World* world, const glm::ivec3& offset) {
     m_blocks.resize(chunk_volume);
     m_mesh.Create();
 
-    // Temporary world generation
-    glm::ivec3 position = { 0, 0, 0 };
-    for (position.x = 0; position.x < chunk_size<>.x; position.x++) {
-        for (position.z = 0; position.z < chunk_size<>.z; position.z++) {
-            for (position.y = 0; position.y < chunk_size<>.y; position.y++) {
-                m_blocks[ChunkPositionToIndex(position)].id = (position.y == chunk_size<>.y - 1) ? BLOCK_GRASS : BLOCK_DIRT;
-            }
-        }
-    }
-
-    m_flags.dirty = true;
-
     m_world = world;
     m_offset = offset;
     m_position = offset * chunk_size<>;
+
+    Generate(*this, 4);
 }
 
 void Chunk::Destroy() {

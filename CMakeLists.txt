@@ -46,3 +46,10 @@ set(STB_IMAGE_DIR "${LIB_DIR}/stb_image")
 # Create a library from stb_image files since it doesn't come with CMake
 add_library(stb-image "${STB_IMAGE_DIR}/stb_image.cpp")
 target_include_directories(stb-image PUBLIC "${STB_IMAGE_DIR}")
+
+# === Perlin Noise ===
+set(PERLIN_NOISE_DIR "${LIB_DIR}/PerlinNoise")
+
+# Create a library from PerlinNoise files since it doesn't come with CMake
+add_library(perlin-noise "${PERLIN_NOISE_DIR}/PerlinNoise.cpp")
+target_include_directories(perlin-noise PUBLIC "${PERLIN_NOISE_DIR}")
