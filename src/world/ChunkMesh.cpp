@@ -54,6 +54,15 @@ void ChunkMesh::Mesh(const Chunk& target, bool transparent) {
         mesh.transparent = type.transparent;
         mesh.liquid = type.liquid;
 
+        if (type.sprite) {
+            const auto [min, max] = State::renderer->atlas.GetCoordinates(type.coords(NORTH));
+            mesh.uv_min = min;
+            mesh.uv_max = max;
+
+            mesh.AppendSprite(*this);
+            return;
+        }
+
         // Go through each face of the block
         for (int d = 0; d < 6; d++) {
             // Setup the current direction
@@ -132,9 +141,7 @@ void ChunkMesh::SortFaces() {
     std::vector<ChunkIndex> sorted_indices;
     for (size_t i = 0; i < m_faces.size(); i++) {
         ChunkFace& face = m_faces[i];
-        sorted_indices.insert(sorted_indices.end(),
-            std::make_move_iterator(m_indices.begin() + face.index_start),
-            std::make_move_iterator(m_indices.begin() + face.index_start + 6));
+        sorted_indices.insert(sorted_indices.end(), std::make_move_iterator(m_indices.begin() + face.index_start), std::make_move_iterator(m_indices.begin() + face.index_start + 6));
         face.index_start = i * 6;
     }
 

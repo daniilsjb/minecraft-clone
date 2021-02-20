@@ -73,6 +73,16 @@ static void PutTree(Chunk& chunk, int x, int y, int z) {
     }
 }
 
+static void PutFlower(Chunk& chunk, int x, int y, int z) {
+    unsigned int id = BLOCK_RED_FLOWER;
+    switch (Random(0, 1)) {
+        case 0: id = BLOCK_RED_FLOWER; break; 
+        case 1: id = BLOCK_YELLOW_FLOWER; break; 
+    }
+
+    chunk.SetBlock({ x, y, z }, Block { id });
+}
+
 void Generate(Chunk& chunk, const uint64_t seed) {
     srand(seed + Hash(chunk.GetOffset()));
 
@@ -158,8 +168,12 @@ void Generate(Chunk& chunk, const uint64_t seed) {
                 chunk.SetBlock({ x, y, z }, Block { BLOCK_WATER });
             }
 
-            if (biome == Biome::PLAINS && Chance(0.002)) {
-                PutTree(chunk, x, h, z);
+            if (biome == Biome::PLAINS) {
+                if (Chance(0.002)) {
+                    PutTree(chunk, x, h, z);
+                } else if (Chance(0.01)) {
+                    PutFlower(chunk, x, h, z);
+                }
             }
         }
     }

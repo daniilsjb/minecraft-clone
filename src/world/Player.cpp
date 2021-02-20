@@ -74,7 +74,10 @@ void Player::Update(float dt) {
         }).Cast(ray_reach, ray_intersection);
 
         if (rayhit.has_value()) {
-            State::world->SetBlock(rayhit->position + DirectionToVector(rayhit->face), selected_block);
+            // Cannot attach blocks to sprites
+            if (!Blocks::data[State::world->GetBlock(rayhit->position).id].sprite) {
+                State::world->SetBlock(rayhit->position + DirectionToVector(rayhit->face), selected_block);
+            }
         }
     }
 

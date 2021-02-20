@@ -25,4 +25,5 @@ struct BlockMeshParams {
     bool liquid;
 
 	void AppendFace(ChunkMesh& target);
+	void AppendSprite(ChunkMesh& target);
 };

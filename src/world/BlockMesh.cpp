@@ -42,6 +42,14 @@ constexpr std::array<unsigned int, 6 * 6> CUBE_INDICES = {
     0, 1, 5, 5, 4, 0, // Down
 };
 
+constexpr std::array<unsigned int, 2 * 6> SPRITE_INDICES = {
+    5, 0, 3, 3, 6, 5,
+    // 3, 0, 5, 3, 5, 6,
+
+    1, 4, 7, 7, 2, 1,
+    // 4, 2, 1, 4, 2, 7,
+};
+
 constexpr std::array<float, 4 * 2> CUBE_UVS = {
     1.0f, 0.0f,
     0.0f, 0.0f,
@@ -99,4 +107,37 @@ void BlockMeshParams::AppendFace(ChunkMesh& target) {
 
     target.m_vertex_count += 4;
     target.m_index_count += 6;
+}
+
+void BlockMeshParams::AppendSprite(ChunkMesh& target) {
+    for (size_t i = 0; i < 2; i++) {
+        glm::vec3 face_position = chunk_position + position;
+        size_t index_start = target.m_index_count + (i * 6);
+        target.m_faces.push_back({ face_position, index_start, 0.0f });
+    }
+
+    for (int i = 0; i < 8; i++) {
+        const float* coords = &CUBE_COORDINATES[i * 3];
+        const float* uv = &CUBE_UVS[(i % 4) * 2];
+
+        glm::vec3 vertex_position = {
+            position.x + coords[0],
+            position.y + coords[1],
+            position.z + coords[2],
+        };
+
+        glm::vec2 vertex_tex_coords = {
+            uv[0] == 1.0f ? uv_max.x : uv_min.x,
+            uv[1] == 1.0f ? uv_max.y : uv_min.y,
+        };
+
+        target.m_vertices.push_back({ vertex_position, vertex_tex_coords, glm::vec3(1.0f) });
+    }
+
+    for (int i = 0; i < 12; i++) {
+        target.m_indices.push_back({ target.m_vertex_count + SPRITE_INDICES[i] });
+    }
+
+    target.m_vertex_count += 8;
+    target.m_index_count += 12;
 }
