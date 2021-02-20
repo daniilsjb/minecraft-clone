@@ -22,6 +22,7 @@ enum BlockId {
     BLOCK_GLASS,
     BLOCK_RED_FLOWER,
     BLOCK_YELLOW_FLOWER,
+    BLOCK_WOOD,
     BLOCK_COUNT
 };
 
@@ -95,6 +96,10 @@ struct Blocks {
 
         { BLOCK_YELLOW_FLOWER, true, false, true, [](Direction d) -> glm::ivec2 {
              return { 13, 0 };
+        }},
+
+        { BLOCK_WOOD, false, false, false, [](Direction d) -> glm::ivec2 {
+             return { 14, 0 };
         }},
     }};
 };

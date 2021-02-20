@@ -44,10 +44,7 @@ constexpr std::array<unsigned int, 6 * 6> CUBE_INDICES = {
 
 constexpr std::array<unsigned int, 2 * 6> SPRITE_INDICES = {
     5, 0, 3, 3, 6, 5,
-    // 3, 0, 5, 3, 5, 6,
-
     1, 4, 7, 7, 2, 1,
-    // 4, 2, 1, 4, 2, 7,
 };
 
 constexpr std::array<float, 4 * 2> CUBE_UVS = {
