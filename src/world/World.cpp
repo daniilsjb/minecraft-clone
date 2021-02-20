@@ -1,9 +1,14 @@
 #include "World.hpp"
 #include "../State.hpp"
 #include "../gfx/Renderer.hpp"
+#include "../gfx/Window.hpp"
+
+#include <ctime>
+#include <algorithm>
 
 void World::Create() {
     m_player.Init();
+    m_seed = (uint64_t)(time(0));
 
     m_chunks.resize(world_area);
     SetCenter(State::renderer->camera.position);
@@ -22,6 +27,10 @@ auto World::IsCreated() const -> bool {
 
 void World::Update(float dt) {
     m_player.Update(dt);
+
+    for (auto& chunk : m_chunks) {
+        chunk.Update();
+    }
 }
 
 void World::PrepareRender() {
@@ -39,8 +48,35 @@ void World::Render() const {
     State::renderer->atlas.Bind();
 
     for (const auto& chunk : m_chunks) {
-        chunk.Render();
+        chunk.Render(false);
     }
+
+    // Draw chunks in the sorted order, from farthest to the nearest
+    struct ChunkSort {
+        glm::ivec3 offset;
+        float distance;
+    };
+
+    // Calculate offset and distance to each visible chunk
+    std::array<ChunkSort, world_area> sorted;
+    for (size_t i = 0; i < sorted.size(); i++) {
+        glm::ivec3 offset = m_chunks[i].GetOffset();
+        float distance = glm::distance((glm::vec3)offset, (glm::vec3)m_offset);
+
+        sorted[i] = { offset, distance };
+    }
+
+    // Sort them by distance
+    std::sort(sorted.begin(), sorted.end(), [](const ChunkSort& a, const ChunkSort& b) {
+        return a.distance > b.distance;
+    });
+
+    // Render them by reconstructing indices from sorted offsets
+    glDisable(GL_CULL_FACE);
+    for (const auto& chunk : sorted) {
+        m_chunks[ChunkIndex(chunk.offset)].Render(true);
+    }
+    glEnable(GL_CULL_FACE);
 }
 
 void World::SetCenter(const glm::ivec3& position) {
@@ -52,6 +88,7 @@ void World::SetCenter(const glm::ivec3& position) {
     if (m_center == new_center) {
         return;
     }
+    m_offset = new_offset;
     m_center = new_center;
 
     // Move old chunks into another vector and setup a new collection of chunks
@@ -124,6 +161,14 @@ auto World::GetChunk(const glm::ivec3& offset) const -> const Chunk& {
 
 auto World::GetChunk(const glm::ivec3& offset) -> Chunk& {
     return m_chunks[ChunkIndex(offset)];
+}
+
+auto World::GetSeed() const -> uint64_t {
+    return m_seed;
+}
+
+auto World::GetPlayer() -> Player* {
+    return &m_player;
 }
 
 void World::CreateMissingChunks() {

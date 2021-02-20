@@ -4,22 +4,26 @@
 #include "World.hpp"
 #include "Generator.hpp"
 
+#include <iostream>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 void Chunk::Create(World* world, const glm::ivec3& offset) {
     m_blocks.resize(chunk_volume);
-    m_mesh.Create();
+    m_opaque_mesh.Create();
+    m_transparent_mesh.Create();
 
     m_world = world;
     m_offset = offset;
     m_position = offset * chunk_size<>;
 
-    Generate(*this, 4);
+    Generate(*this, m_world->GetSeed());
 }
 
 void Chunk::Destroy() {
-    m_mesh.Destroy();
+    m_opaque_mesh.Destroy();
+    m_transparent_mesh.Destroy();
     m_blocks.clear();
 
     m_flags = {};
@@ -41,20 +45,33 @@ void Chunk::ForEach(const BlockFunction& function) const {
 }
 
 void Chunk::Update() {
+    Player* player = State::world->GetPlayer();
+    m_flags.sort = (player->changed_block && glm::distance((glm::vec3)player->offset, (glm::vec3)m_offset) < 2.0f);
 }
 
 void Chunk::PrepareRender() {
     if (m_flags.dirty) {
-        m_mesh.Mesh(*this);
+        m_opaque_mesh.Mesh(*this, false);
+        m_transparent_mesh.Mesh(*this, true);
         m_flags.dirty = false;
+        m_flags.sort = false;
+    }
+
+    if (m_flags.sort) {
+        m_transparent_mesh.Sort();
+        m_flags.sort = false;
     }
 }
 
-void Chunk::Render() const {
+void Chunk::Render(bool transparent) const {
     glm::mat4 model = glm::translate(glm::mat4(1.0f), (glm::vec3)m_position);
     State::renderer->shaders[SHADER_CHUNK].SetUniform("u_model", model);
 
-    m_mesh.Render();
+    if (transparent) {
+        m_transparent_mesh.Render();
+    } else {
+        m_opaque_mesh.Render();
+    }
 }
 
 auto Chunk::GetBlock(const glm::ivec3& position) const -> Block {
@@ -86,6 +103,14 @@ auto Chunk::GetOffset() const -> glm::ivec3 {
 
 auto Chunk::GetPosition() const -> glm::ivec3 {
     return m_position;
+}
+
+void Chunk::SetDirty() {
+    m_flags.dirty = true;
+}
+
+void Chunk::SetSort() {
+    m_flags.sort = true;
 }
 
 void Chunk::GetBorderingChunks(const glm::ivec3& position, Chunk* dest[2]) {

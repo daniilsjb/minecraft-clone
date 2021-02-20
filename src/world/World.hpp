@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <functional>
+#include <cstdint>
 
 #include "Chunk.hpp"
 #include "Player.hpp"
@@ -49,11 +50,16 @@ public:
     auto GetChunk(const glm::ivec3& offset) const -> const Chunk&;
     auto GetChunk(const glm::ivec3& offset) -> Chunk&;
 
+    auto GetSeed() const -> uint64_t;
+    auto GetPlayer() -> Player*;
+
 private:
     std::vector<Chunk> m_chunks;
-    glm::ivec3 m_center {};
+    glm::ivec3 m_center, m_offset {};
 
     Player m_player;
+
+    uint64_t m_seed;
 
     void CreateMissingChunks();
 };

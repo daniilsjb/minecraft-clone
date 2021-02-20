@@ -31,7 +31,7 @@ public:
 
     void Update();
     void PrepareRender();
-    void Render() const;
+    void Render(bool transparent) const;
 
     auto GetBlock(const glm::ivec3& position) const -> Block;
     void SetBlock(const glm::ivec3& position, Block block);
@@ -40,9 +40,13 @@ public:
     auto GetOffset() const -> glm::ivec3;
     auto GetPosition() const -> glm::ivec3;
 
+    void SetDirty();
+    void SetSort();
+
 private:
     std::vector<Block> m_blocks;
-    ChunkMesh m_mesh;
+    ChunkMesh m_opaque_mesh;
+    ChunkMesh m_transparent_mesh;
 
     // Absolute position in the chunk coordinate system (in terms of chunks)
     glm::ivec3 m_offset;
@@ -55,6 +59,9 @@ private:
     struct {
         // If true, the mesh has been modified and its mesh must be re-generated
         bool dirty : 1;
+
+        // If true, the transparent block faces need to be re-sorted
+        bool sort : 1;
     } m_flags {};
 
     void GetBorderingChunks(const glm::ivec3& position, Chunk* dest[2]);

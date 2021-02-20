@@ -4,10 +4,16 @@
 
 class Player {
 public:
-    float movementSpeed { 5.0f };
-    float mouseSensitivity { 0.2f };
+    float movement_speed { 5.0f };
+    float mouse_sensitivity { 0.2f };
 
-    Block selectedBlock { BLOCK_DIRT };
+    Block selected_block { 1 };
+
+    bool changed_block { false };
+    glm::ivec3 block;
+
+    bool changed_offset { false };
+    glm::ivec3 offset;
 
     void Init();
     void Update(float dt);

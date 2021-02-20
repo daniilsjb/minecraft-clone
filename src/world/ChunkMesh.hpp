@@ -12,10 +12,17 @@ class Chunk;
 struct ChunkVertex {
     glm::vec3 position;
     glm::vec2 tex_coords;
+    glm::vec3 color;
 };
 
 struct ChunkIndex {
     unsigned int index;
+};
+
+struct ChunkFace {
+    glm::vec3 position;
+    size_t index_start;
+    float distance;
 };
 
 class ChunkMesh {
@@ -23,7 +30,8 @@ public:
     void Create();
     void Destroy();
 
-    void Mesh(const Chunk& target);
+    void Mesh(const Chunk& target, bool transparent);
+    void Sort();
     void Render() const;
 
     auto GetVertexCount() const -> unsigned int;
@@ -34,6 +42,7 @@ public:
 private:
     std::vector<ChunkVertex> m_vertices;
     std::vector<ChunkIndex> m_indices;
+    std::vector<ChunkFace> m_faces;
 
     unsigned int m_vertex_count { 0 };
     unsigned int m_index_count { 0 };
@@ -43,6 +52,7 @@ private:
 
     void Reset();
 
+    void SortFaces();
     void FinalizeVertices();
     void FinalizeIndices();
 };

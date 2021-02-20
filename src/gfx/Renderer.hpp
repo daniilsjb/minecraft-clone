@@ -31,7 +31,7 @@ public:
     std::array<Shader, SHADER_COUNT> shaders;
 
     // Background color used when clearing the screen
-    glm::vec4 clear_color { 0.1f, 0.6f, 0.6f, 1.0f };
+    glm::vec4 clear_color { 0.509f, 0.674f, 0.996f, 1.0f };
 
     struct {
         // If true, all graphics are drawn in wireframe mode
