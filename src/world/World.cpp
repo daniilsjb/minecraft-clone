@@ -150,8 +150,10 @@ auto World::GetBlock(const glm::ivec3& position) const -> Block {
 
 void World::SetBlock(const glm::ivec3& position, Block block) {
     const glm::ivec3 offset = BlockToOffset(position);
-    if (position.y >= 0 && position.y < chunk_size<>.y && ContainsChunk(offset)) {
+    if (ContainsChunk(offset)) {
         m_chunks[ChunkIndex(offset)].SetBlock(BlockToChunk(position), block);
+    } else {
+        m_queued_blocks.push_back({ position, block });
     }
 }
 
@@ -177,6 +179,15 @@ void World::CreateMissingChunks() {
 
         if (!chunk.IsCreated()) {
             chunk.Create(this, ChunkOffset(i));
+        }
+    }
+
+    for (auto it = m_queued_blocks.begin(); it != m_queued_blocks.end();) {
+        if (Contains(it->position)) {
+            SetBlock(it->position, it->block);
+            it = m_queued_blocks.erase(it);
+        } else {
+            it++;
         }
     }
 }

@@ -57,6 +57,14 @@ private:
     std::vector<Chunk> m_chunks;
     glm::ivec3 m_center, m_offset {};
 
+    // Blocks that were placed in the world before their containing chunks were loaded
+    struct QueuedBlock {
+        glm::ivec3 position;
+        Block block;
+    };
+
+    std::vector<QueuedBlock> m_queued_blocks;
+
     Player m_player;
 
     uint64_t m_seed;

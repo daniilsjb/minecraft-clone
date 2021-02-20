@@ -4,6 +4,15 @@
 #include <glm/glm.hpp>
 
 #include "Block.hpp"
+#include "../world/World.hpp"
+
+static auto Random(const int min, const int max) -> int {
+    return (rand() % (max - min + 1)) + min;
+}
+
+static auto Chance(const double percent) -> bool {
+    return (double)Random(0, 100000) / 100000.0 <= percent;
+}
 
 constexpr auto Hash(const glm::ivec3& v) -> int64_t {
     int64_t hash = 0;
@@ -27,6 +36,41 @@ auto Octave::Compute(float x, float z, float seed) -> float {
 
 auto Combined::Compute(float x, float z, float seed) -> float {
     return a->Compute(x + b->Compute(x, z, seed), z, seed);
+}
+
+static void PutTree(Chunk& chunk, int x, int y, int z) {
+    int height = Random(4, 6);
+
+    Block trunk = { BLOCK_OAK };
+    Block leaves = { BLOCK_LEAVES };
+
+    for (int i = 0; i < height; i++) {
+        chunk.SetBlock({ x, y + i, z }, trunk);
+    }
+
+    int top_start = y + height - 1;
+    int top = top_start;
+
+    int radius = Random(2, 3);
+    while (radius > 0) {
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
+                if (top == top_start && dx == 0 && dz == 0) {
+                    continue;
+                }
+
+                bool corner = (std::abs(dx) == radius) && (std::abs(dz) == radius);
+                if (corner && Chance(0.15)) {
+                    continue;
+                }
+
+                chunk.GetWorld()->SetBlock(chunk.GetPosition() + glm::ivec3 { x + dx, top, z + dz }, leaves);
+            }
+        }
+
+        top++;
+        radius--;
+    }
 }
 
 void Generate(Chunk& chunk, const uint64_t seed) {
@@ -112,6 +156,10 @@ void Generate(Chunk& chunk, const uint64_t seed) {
 
             for (int y = h; y < water_level; y++) {
                 chunk.SetBlock({ x, y, z }, Block { BLOCK_WATER });
+            }
+
+            if (biome == Biome::PLAINS && Chance(0.002)) {
+                PutTree(chunk, x, h, z);
             }
         }
     }
