@@ -4,7 +4,10 @@
 
 ## Features
 
-This repository contains a small Minecraft clone I did as a side-project to practice my OpenGL and game development skills. The project doesn't use a game engine, and only contains necessary libraries for dealing with OpenGL. The goal was to build a simple but playable version of the game in about a week from scratch, and then slowly keep adding more features on top. So far, the game has:
+This repository contains a small Minecraft clone I did as a side-project to practice my OpenGL and game development
+skills. The project doesn't use a game engine, and only contains necessary libraries for dealing with OpenGL. The goal
+was to build a simple but playable version of the game in about a week from scratch, and then slowly keep adding more
+features on top. So far, the game has:
 
 * Infinite world made up of chunks
 * Ability to destroy and place blocks with ray casting
@@ -12,7 +15,8 @@ This repository contains a small Minecraft clone I did as a side-project to prac
 * Water and various other transparent and translucent objects
 * 2D objects, such as flowers
 
-There is still much to be done, including more features and optimizations, better architectural decisions, and visual improvements. I am planning to keep updating this repository, so stay tuned if you are interested.
+There is still much to be done, including more features and optimizations, better architectural decisions, and visual
+improvements. I am planning to keep updating this repository, so stay tuned if you are interested.
 
 ## Building
 
