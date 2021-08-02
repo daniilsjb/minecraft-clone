@@ -8,7 +8,7 @@ This repository contains a small Minecraft clone I did as a side-project to prac
 
 * Infinite world made up of chunks
 * Ability to destroy and place blocks with ray casting
-* Procedural terrain generation using [homemade Perlin Noise implementation](https://github.com/daniilsjb/PerlinNoise)
+* Procedural terrain generation using [homemade Perlin Noise implementation](https://github.com/daniilsjb/perlin-noise)
 * Water and various other transparent and translucent objects
 * 2D objects, such as flowers
 
@@ -20,8 +20,8 @@ In case you'd like to build this project, make sure you have a C++17 compiler, C
 
 ```shell
 # Clone the repository with all the dependencies
-git clone --recurse-submodules https://github.com/daniilsjb/MinecraftClone
-cd MinecraftClone
+git clone --recurse-submodules https://github.com/daniilsjb/minecraft-clone
+cd minecraft-clone
 
 # Run CMake to build it
 mkdir build
