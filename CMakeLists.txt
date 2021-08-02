@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.15)
 # Project definition
 project(MinecraftClone DESCRIPTION "A simple Minecraft clone" LANGUAGES C CXX)
 
-# Use C++17 standard
-set(CMAKE_CXX_STANDARD 17)
+# Use C++20 standard
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

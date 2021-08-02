@@ -16,7 +16,7 @@ There is still much to be done, including more features and optimizations, bette
 
 ## Building
 
-In case you'd like to build this project, make sure you have a C++17 compiler, CMake, and git:
+In case you'd like to build this project, make sure you have a C++20 compiler, CMake, and git:
 
 ```shell
 # Clone the repository with all the dependencies
