@@ -1,6 +1,6 @@
 #include "Generator.hpp"
 
-#include <PerlinNoise.h>
+#include <db_perlin.hpp>
 #include <glm/glm.hpp>
 
 #include "Block.hpp"
@@ -28,7 +28,7 @@ auto Octave::Compute(float x, float z, float seed) -> float {
     float v = 0.0f;
     float u = 1.0f;
     for (int i = 0; i < number; i++) {
-        v += PerlinNoise::Noise(x / u, z / u, seed + i + (offset * 32)) * u;
+        v += db::perlin(x / u, z / u, seed + i + (offset * 32)) * u;
         u *= 2.0f;
     }
     return v;
