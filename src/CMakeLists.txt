@@ -34,11 +34,11 @@ add_executable(game
     "world/World.cpp"
     "world/World.hpp"
 
-    "general/Direction.hpp"
-    "general/Ray.cpp"
-    "general/Ray.hpp"
-    "general/db_perlin.cpp"
-    "general/stb_image.cpp"
+    "common/Direction.hpp"
+    "common/Ray.cpp"
+    "common/Ray.hpp"
+    "common/db_perlin.cpp"
+    "common/stb_image.cpp"
 )
 
 # Specify language standard
