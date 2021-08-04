@@ -5,7 +5,7 @@
 #include <array>
 #include <functional>
 
-#include "../general/Direction.hpp"
+#include "../common/Direction.hpp"
 
 // Unique identifier for each block type
 enum BlockId {

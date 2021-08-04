@@ -3,7 +3,7 @@
 #include "../gfx/Renderer.hpp"
 #include "../gfx/Window.hpp"
 #include "../world/World.hpp"
-#include "../general/Ray.hpp"
+#include "../common//Ray.hpp"
 
 constexpr auto ray_intersection = [](const glm::ivec3& position) {
     return State::world->GetBlock(position).id != BLOCK_AIR;
@@ -33,14 +33,14 @@ void Player::Update(float dt) {
         State::renderer->camera.position += glm::vec3 { 0.0f, 1.0f, 0.0f } * dt * movement_speed;
     }
 
-    glm::ivec3 block = PositionToBlock(State::renderer->camera.position);
-    glm::ivec3 offset = BlockToOffset(block);
+    glm::ivec3 new_block = PositionToBlock(State::renderer->camera.position);
+    glm::ivec3 new_offset = BlockToOffset(new_block);
 
-    changed_block = (this->block != block);
-    changed_offset = (this->offset != offset);
+    changed_block = (this->block != new_block);
+    changed_offset = (this->offset != new_offset);
 
-    this->block = block;
-    this->offset = offset;
+    this->block = new_block;
+    this->offset = new_offset;
 
     if (State::window->keyboard.IsPressed(GLFW_KEY_LEFT)) {
         selected_block.id--;
@@ -58,25 +58,25 @@ void Player::Update(float dt) {
 
     float ray_reach = 6.0f;
     if (State::window->mouse.IsPressed(GLFW_MOUSE_BUTTON_1)) {
-        auto rayhit = (Ray {
+        auto ray_hit = (Ray {
             State::renderer->camera.position,
             State::renderer->camera.direction
         }).Cast(ray_reach, ray_intersection);
 
-        if (rayhit.has_value()) {
-            State::world->SetBlock(rayhit->position, Block { BLOCK_AIR });
+        if (ray_hit.has_value()) {
+            State::world->SetBlock(ray_hit->position, Block { BLOCK_AIR });
         }
     }
     if (State::window->mouse.IsPressed(GLFW_MOUSE_BUTTON_2)) {
-        auto rayhit = (Ray {
+        auto ray_hit = (Ray {
             State::renderer->camera.position,
             State::renderer->camera.direction
         }).Cast(ray_reach, ray_intersection);
 
-        if (rayhit.has_value()) {
+        if (ray_hit.has_value()) {
             // Cannot attach blocks to sprites
-            if (!Blocks::data[State::world->GetBlock(rayhit->position).id].sprite) {
-                State::world->SetBlock(rayhit->position + DirectionToVector(rayhit->face), selected_block);
+            if (!Blocks::data[State::world->GetBlock(ray_hit->position).id].sprite) {
+                State::world->SetBlock(ray_hit->position + DirectionToVector(ray_hit->face), selected_block);
             }
         }
     }

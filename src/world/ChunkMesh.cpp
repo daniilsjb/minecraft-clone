@@ -1,7 +1,6 @@
 #include "ChunkMesh.hpp"
 #include "../State.hpp"
 #include "../gfx/Renderer.hpp"
-#include "../gfx/VertexLayout.hpp"
 #include "BlockMesh.hpp"
 #include "Chunk.hpp"
 #include "World.hpp"

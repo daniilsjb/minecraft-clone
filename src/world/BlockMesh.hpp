@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../general/Direction.hpp"
+#include "../common/Direction.hpp"
 
 class ChunkMesh;
 

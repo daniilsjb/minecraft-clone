@@ -25,7 +25,7 @@ constexpr std::array<glm::ivec3, 6> directions = {{
 
 constexpr auto DirectionToVector(Direction d) -> glm::ivec3 {
     return directions[static_cast<int>(d)];
-};
+}
 
 constexpr auto VectorToDirection(const glm::ivec3& v) -> Direction {
     for (int i = 0; i < 6; i++) {
@@ -36,4 +36,4 @@ constexpr auto VectorToDirection(const glm::ivec3& v) -> Direction {
 
     assert(false);
     return static_cast<Direction>(-1);
-};
+}

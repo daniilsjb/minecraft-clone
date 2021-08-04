@@ -1,9 +1,7 @@
 #include "Generator.hpp"
 
 #include <db_perlin.hpp>
-#include <glm/glm.hpp>
 
-#include "Block.hpp"
 #include "../world/World.hpp"
 
 static auto Random(const int min, const int max) -> int {
@@ -118,7 +116,7 @@ void Generate(Chunk& chunk, const uint64_t seed) {
             // Sample the base noise
             float t = n.Compute(wx, wz, seed);
 
-            int hr = 0;
+            int hr;
             if (t > 0) {
                 hr = hl;
             } else {

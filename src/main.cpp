@@ -1,11 +1,9 @@
-﻿#include <iostream>
-
-#include "State.hpp"
+﻿#include "State.hpp"
 #include "gfx/Window.hpp"
 #include "gfx/Renderer.hpp"
 #include "world/World.hpp"
 
-int main() {
+auto main() -> int {
     // The main window with OpenGL context
     Window window;
     State::window = &window;

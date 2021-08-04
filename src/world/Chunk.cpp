@@ -4,11 +4,6 @@
 #include "World.hpp"
 #include "Generator.hpp"
 
-#include <iostream>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 void Chunk::Create(World* world, const glm::ivec3& offset) {
     m_blocks.resize(chunk_volume);
     m_opaque_mesh.Create();

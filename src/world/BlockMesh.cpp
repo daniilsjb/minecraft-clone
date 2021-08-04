@@ -1,6 +1,5 @@
 #include "BlockMesh.hpp"
 #include "ChunkMesh.hpp"
-#include "Block.hpp"
 
 #include <array>
 
