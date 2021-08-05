@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <cassert>
 
 #include "../world/World.hpp"
 #include "Renderer.hpp"
@@ -132,6 +133,7 @@ Window::~Window() {
     Destroy();
 }
 
+// TODO: Find a different way to signal window errors
 void Window::Create(const std::string& name, int width, int height) {
     m_width = width;
     m_height = height;
@@ -147,12 +149,12 @@ void Window::Create(const std::string& name, int width, int height) {
 
     m_handle = glfwCreateWindow(m_width, m_height, name.c_str(), nullptr, nullptr);
     if (m_handle == nullptr) {
-        throw std::runtime_error("Could not create a window");
+        assert(("Could not create a window", false));
     }
 
     glfwMakeContextCurrent(m_handle);
     if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-        throw std::runtime_error("Could not load symbols via GLAD");
+        assert(("Could not load symbols via GLAD", false));
     }
 
     glEnable(GL_DEBUG_OUTPUT);

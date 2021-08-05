@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 
 #include <iostream>
+#include <cassert>
 
 #include "Texture.hpp"
 
@@ -79,13 +80,14 @@ void Texture::LoadFromPixels(unsigned char* pixels, size_t width, size_t height)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_size.x, m_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 }
 
+// TODO: Find a different way to signal texture errors
 void Texture::LoadFromPath(const std::string& path) {
     stbi_set_flip_vertically_on_load(true);
 
     int num_channels = 0;
     unsigned char* data = stbi_load(path.c_str(), &m_size.x, &m_size.y, &num_channels, 0);
     if (data == nullptr) {
-        throw std::runtime_error("Could not load texture at '" + path + "'");
+        assert(("Could not load texture at specified path", false));
     }
 
     LoadFromPixels(data, m_size.x, m_size.y);

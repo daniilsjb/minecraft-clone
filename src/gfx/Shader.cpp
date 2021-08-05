@@ -6,6 +6,7 @@
 #include <array>
 #include <fstream>
 #include <iostream>
+#include <cassert>
 
 Shader::Shader(const std::string& vert_path, const std::string& frag_path) {
     m_handle = glCreateProgram();
@@ -111,6 +112,7 @@ auto Shader::GetLocation(const std::string& name) const -> unsigned int {
     return glGetUniformLocation(m_handle, name.c_str());
 }
 
+// TODO: Find a different way to signal shader errors
 auto Shader::AttachShader(unsigned int type, const std::string& source) const -> unsigned int {
     const unsigned int shaderID = glCreateShader(type);
 
@@ -136,7 +138,7 @@ auto Shader::AttachShader(unsigned int type, const std::string& source) const ->
         }
         std::cerr << '\n';
 
-        throw std::runtime_error("Could not compile shader");
+        assert(("Could not compile shader", false));
     }
 
     glAttachShader(m_handle, shaderID);
@@ -156,7 +158,7 @@ void Shader::LinkProgram() const {
         std::cerr << "[Shader] " << log.data() << '\n';
         std::cerr << "-- Type: Linking\n";
 
-        throw std::runtime_error("Could not link shader");
+        assert(("Could not link shader", false));
     }
 }
 
@@ -168,7 +170,7 @@ auto Shader::ReadShaderFile(const std::string& path) const -> std::string {
         std::cerr << "[Shader] Could not read file at '" << path << "'\n";
         std::cerr << "-- Type: Reading\n";
 
-        throw std::runtime_error("Could not read shader");
+        assert(("Could not read shader", false));
     }
 
     file.seekg(0, std::ios::end);

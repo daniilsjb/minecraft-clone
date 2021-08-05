@@ -73,12 +73,12 @@ private:
 };
 
 // world position (float) -> block position
-constexpr auto PositionToBlock(const glm::vec3& position) -> glm::ivec3 {
+inline auto PositionToBlock(const glm::vec3& position) -> glm::ivec3 {
     return (glm::ivec3)glm::floor(position);
 }
 
 // world position -> chunk offset
-constexpr auto BlockToOffset(const glm::ivec3& position) -> glm::ivec3 {
+inline auto BlockToOffset(const glm::ivec3& position) -> glm::ivec3 {
     return glm::ivec3 {
         (int)std::floorf((float)position.x / chunk_size<glm::vec3>.x),
         (int)0,
