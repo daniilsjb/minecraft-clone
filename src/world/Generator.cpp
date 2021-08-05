@@ -82,7 +82,7 @@ static void PutFlower(Chunk& chunk, int x, int y, int z) {
 }
 
 void Generate(Chunk& chunk, const uint64_t seed) {
-    srand(seed + Hash(chunk.GetOffset()));
+    srand(static_cast<unsigned int>(seed + Hash(chunk.GetOffset())));
 
     // Base noise
     Octave n = { 6, 0 };
@@ -105,25 +105,25 @@ void Generate(Chunk& chunk, const uint64_t seed) {
     for (int x = 0; x < chunk_size<>.x; x++) {
         for (int z = 0; z < chunk_size<>.z; z++) {
             // Find the block's world position
-            int wx = chunk.GetPosition().x + x;
-            int wz = chunk.GetPosition().z + z;
+            float wx = static_cast<float>(chunk.GetPosition().x + x);
+            float wz = static_cast<float>(chunk.GetPosition().z + z);
 
             // Sample combined noise functions to retrieve high and low results
             const float scale = 1.3f;
-            int hl = (cs[0].Compute(wx * scale, wz * scale, seed) / 6.0f) - 4.0f;
-            int hh = (cs[1].Compute(wx * scale, wz * scale, seed) / 5.0f) + 6.0f;
+            float hl = (cs[0].Compute(wx * scale, wz * scale, static_cast<float>(seed)) / 6.0f) - 4.0f;
+            float hh = (cs[1].Compute(wx * scale, wz * scale, static_cast<float>(seed)) / 5.0f) + 6.0f;
 
             // Sample the base noise
-            float t = n.Compute(wx, wz, seed);
+            float t = n.Compute(wx, wz, static_cast<float>(seed));
 
-            int hr;
+            float hr;
             if (t > 0) {
                 hr = hl;
             } else {
                 hr = std::max(hl, hh);
             }
 
-            int h = hr + water_level;
+            int h = static_cast<int>(hr) + water_level;
 
             Biome biome;
             if (h < water_level) {
@@ -135,7 +135,7 @@ void Generate(Chunk& chunk, const uint64_t seed) {
             }
 
             for (int y = 0; y < h; y++) {
-                unsigned int id;
+                unsigned int id = 0;
 
                 // Determine the top-block based on the biome
                 if (y == (h - 1)) {
