@@ -57,8 +57,8 @@ void Renderer::RenderQuad() const {
         2, 3, 0,
     };
 
-    m_vbo.Buffer((const void*)vertices, sizeof(vertices));
-    m_ibo.Buffer((const void*)indices, sizeof(indices));
+    m_vbo.Buffer(static_cast<const void*>(vertices), sizeof(vertices));
+    m_ibo.Buffer(static_cast<const void*>(indices), sizeof(indices));
 
     VertexLayout layout;
     layout.PushAttribute<float>(2);
@@ -94,8 +94,8 @@ void Renderer::RenderPlane() const {
     layout.PushAttribute<float>(2);
     layout.PushAttribute<float>(2);
 
-    m_vbo.Buffer((const void*)vertices, sizeof(vertices));
-    m_ibo.Buffer((const void*)indices, sizeof(indices));
+    m_vbo.Buffer(static_cast<const void*>(vertices), sizeof(vertices));
+    m_ibo.Buffer(static_cast<const void*>(indices), sizeof(indices));
     m_vao.Attributes(m_vbo, layout);
 
     shaders[SHADER_PLANE].Bind();

@@ -9,11 +9,11 @@ auto Ray::Cast(float max_distance, const RayIntersect& intersect) const -> std::
         ((direction.y > 0) ? (ceilf(origin.y) - origin.y) : (origin.y - floorf(origin.y))) / fabsf(direction.y),
         ((direction.z > 0) ? (ceilf(origin.z) - origin.z) : (origin.z - floorf(origin.z))) / fabsf(direction.z)
     };
-    glm::vec3 tdelta = (glm::vec3)step / direction;
+    glm::vec3 tdelta = static_cast<glm::vec3>(step) / direction;
 
     float radius = max_distance / glm::length(direction);
 
-    Direction face = (Direction)-1;
+    auto face = static_cast<Direction>(0);
     while (true) {
         if (intersect(position)) {
             return RayHit { position, face };

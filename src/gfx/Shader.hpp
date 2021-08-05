@@ -37,7 +37,7 @@ public:
     void SetUniform(const std::string& name, const glm::mat4& value) const;
 
     auto GetHandle() const -> unsigned int;
-    auto GetLocation(const std::string& name) const -> unsigned int;
+    auto GetLocation(const std::string& name) const -> int;
 
 private:
     unsigned int m_handle { 0 };

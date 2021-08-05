@@ -105,7 +105,7 @@ void ChunkMesh::Render() const {
 
     m_vao.Bind();
     m_ibo.Bind();
-    glDrawElements(GL_TRIANGLES, m_index_count, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, static_cast<int>(m_index_count), GL_UNSIGNED_INT, nullptr);
 }
 
 auto ChunkMesh::GetVertexCount() const -> unsigned int {
@@ -140,7 +140,11 @@ void ChunkMesh::SortFaces() {
     std::vector<ChunkIndex> sorted_indices;
     for (size_t i = 0; i < m_faces.size(); i++) {
         ChunkFace& face = m_faces[i];
-        sorted_indices.insert(sorted_indices.end(), std::make_move_iterator(m_indices.begin() + face.index_start), std::make_move_iterator(m_indices.begin() + face.index_start + 6));
+        sorted_indices.insert(
+            sorted_indices.end(),
+            std::make_move_iterator(m_indices.begin() + static_cast<int64_t>(face.index_start)),
+            std::make_move_iterator(m_indices.begin() + static_cast<int64_t>(face.index_start) + 6)
+        );
         face.index_start = i * 6;
     }
 
@@ -148,11 +152,11 @@ void ChunkMesh::SortFaces() {
 }
 
 void ChunkMesh::FinalizeVertices() {
-    m_vbo.Buffer(m_vertices.data(), sizeof(ChunkVertex) * m_vertices.size());
+    m_vbo.Buffer(m_vertices.data(), static_cast<unsigned int>(sizeof(ChunkVertex) * m_vertices.size()));
     m_vertices.clear();
 }
 
 void ChunkMesh::FinalizeIndices() {
-    m_ibo.Buffer(m_indices.data(), sizeof(ChunkIndex) * m_indices.size());
+    m_ibo.Buffer(m_indices.data(), static_cast<unsigned int>(sizeof(ChunkIndex) * m_indices.size()));
     // m_indices.clear();
 }

@@ -108,7 +108,7 @@ unsigned int Shader::GetHandle() const {
     return m_handle;
 }
 
-auto Shader::GetLocation(const std::string& name) const -> unsigned int {
+auto Shader::GetLocation(const std::string& name) const -> int {
     return glGetUniformLocation(m_handle, name.c_str());
 }
 
@@ -174,10 +174,10 @@ auto Shader::ReadShaderFile(const std::string& path) const -> std::string {
     }
 
     file.seekg(0, std::ios::end);
-    result.resize((size_t)file.tellg());
+    result.resize(static_cast<size_t>(file.tellg()));
     file.seekg(0, std::ios::beg);
 
-    file.read(&result[0], result.size());
+    file.read(&result[0], static_cast<int64_t>(result.size()));
     file.close();
 
     return result;

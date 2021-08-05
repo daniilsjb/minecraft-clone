@@ -1,7 +1,8 @@
 #include "VertexLayout.hpp"
 
-VertexElement::VertexElement(unsigned int type, unsigned int count, unsigned char normalized, unsigned int offset) :
-    type(type), count(count), normalized(normalized), offset(offset) {
+// TODO: Maybe there is a better way to avoid shadowing warning than to use a t_ prefix
+VertexElement::VertexElement(unsigned int t_type, unsigned int t_count, unsigned char t_normalized, unsigned int t_offset) :
+    type(t_type), count(t_count), normalized(t_normalized), offset(t_offset) {
 }
 
 unsigned int VertexElement::SizeOf(unsigned int type) {

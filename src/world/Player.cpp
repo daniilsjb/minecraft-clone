@@ -81,8 +81,8 @@ void Player::Update(float dt) {
         }
     }
 
-    State::renderer->camera.yaw += (float)State::window->mouse.delta.x * mouse_sensitivity;
-    State::renderer->camera.pitch -= (float)State::window->mouse.delta.y * mouse_sensitivity;
+    State::renderer->camera.yaw += static_cast<float>(State::window->mouse.delta.x) * mouse_sensitivity;
+    State::renderer->camera.pitch -= static_cast<float>(State::window->mouse.delta.y) * mouse_sensitivity;
 }
 
 void Player::Destroy() {

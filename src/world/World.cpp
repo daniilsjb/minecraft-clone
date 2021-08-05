@@ -8,7 +8,7 @@
 
 void World::Create() {
     m_player.Init();
-    m_seed = (uint64_t)(time(0));
+    m_seed = static_cast<uint64_t>(time(nullptr));
 
     m_chunks.resize(world_area);
     SetCenter(State::renderer->camera.position);
@@ -61,7 +61,10 @@ void World::Render() const {
     std::array<ChunkSort, world_area> sorted;
     for (size_t i = 0; i < sorted.size(); i++) {
         glm::ivec3 offset = m_chunks[i].GetOffset();
-        float distance = glm::distance((glm::vec3)offset, (glm::vec3)m_offset);
+        float distance = glm::distance(
+            static_cast<glm::vec3>(offset),
+            static_cast<glm::vec3>(m_offset)
+        );
 
         sorted[i] = { offset, distance };
     }
@@ -131,7 +134,7 @@ auto World::Contains(const glm::ivec3& position) const -> bool {
 
 auto World::ChunkIndex(const glm::ivec3& offset) const -> size_t {
     const glm::ivec3 p = offset - m_center;
-    return (size_t)p.z * (size_t)chunk_size<>.x + (size_t)p.x;
+    return static_cast<size_t>(p.z) * static_cast<size_t>(chunk_size<>.x) + static_cast<size_t>(p.x);
 }
 
 auto World::ChunkOffset(const size_t index) const -> glm::ivec3 {

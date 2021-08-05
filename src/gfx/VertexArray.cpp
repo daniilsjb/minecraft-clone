@@ -50,7 +50,14 @@ void VertexArray::Attributes(const VertexBuffer& buffer, const VertexLayout& lay
     for (unsigned int i = 0; i < elements.size(); i++) {
         const auto& element = elements[i];
         glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.GetStride(), (const void*)element.offset);
+        glVertexAttribPointer(
+            i,
+            static_cast<int>(element.count),
+            element.type,
+            element.normalized,
+            static_cast<int>(layout.GetStride()),
+            reinterpret_cast<const void*>(element.offset)
+        );
     }
 }
 

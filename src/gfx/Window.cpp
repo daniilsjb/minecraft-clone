@@ -229,8 +229,8 @@ void Window::OnKey(GLFWwindow* handle, int key, int scancode, int action, int mo
     }
 
     switch (action) {
-        case GLFW_PRESS: keyboard.keys[key].down = true; break;
-        case GLFW_RELEASE: keyboard.keys[key].down = false; break;
+        case GLFW_PRESS: keyboard.keys[static_cast<size_t>(key)].down = true; break;
+        case GLFW_RELEASE: keyboard.keys[static_cast<size_t>(key)].down = false; break;
         default: break;
     }
 }
@@ -249,8 +249,8 @@ void Window::OnMouse(GLFWwindow* handle, int button, int action, int mods) {
     }
 
     switch (action) {
-        case GLFW_PRESS: mouse.buttons[button].down = true; break;
-        case GLFW_RELEASE: mouse.buttons[button].down = false; break;
+        case GLFW_PRESS: mouse.buttons[static_cast<size_t>(button)].down = true; break;
+        case GLFW_RELEASE: mouse.buttons[static_cast<size_t>(button)].down = false; break;
         default: break;
     }
 }

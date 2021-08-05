@@ -41,7 +41,7 @@ void Chunk::ForEach(const BlockFunction& function) const {
 
 void Chunk::Update() {
     Player* player = State::world->GetPlayer();
-    m_flags.sort = (player->changed_block && glm::distance((glm::vec3)player->offset, (glm::vec3)m_offset) < 2.0f);
+    m_flags.sort = (player->changed_block && glm::distance(static_cast<glm::vec3>(player->offset),static_cast<glm::vec3>(m_offset)) < 2.0f);
 }
 
 void Chunk::PrepareRender() {
@@ -59,7 +59,7 @@ void Chunk::PrepareRender() {
 }
 
 void Chunk::Render(bool transparent) const {
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), (glm::vec3)m_position);
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), static_cast<glm::vec3>(m_position));
     State::renderer->shaders[SHADER_CHUNK].SetUniform("u_model", model);
 
     if (transparent) {
@@ -70,11 +70,11 @@ void Chunk::Render(bool transparent) const {
 }
 
 auto Chunk::GetBlock(const glm::ivec3& position) const -> Block {
-    return m_blocks[ChunkPositionToIndex(position)];
+    return m_blocks[static_cast<size_t>(ChunkPositionToIndex(position))];
 }
 
 void Chunk::SetBlock(const glm::ivec3& position, Block block) {
-    m_blocks[ChunkPositionToIndex(position)] = block;
+    m_blocks[static_cast<size_t>(ChunkPositionToIndex(position))] = block;
     m_flags.dirty = true;
 
     Chunk* chunks[2] = { nullptr, nullptr };

@@ -9,15 +9,15 @@ static auto Random(const int min, const int max) -> int {
 }
 
 static auto Chance(const double percent) -> bool {
-    return (double)Random(0, 100000) / 100000.0 <= percent;
+    return static_cast<double>(Random(0, 100000)) / 100000.0 <= percent;
 }
 
 constexpr auto Hash(const glm::ivec3& v) -> int64_t {
-    int64_t hash = 0;
-    hash ^= v.x + 0x9E3779B9ui64 + (hash << 6) + (hash >> 2);
-    hash ^= v.y + 0x9E3779B9ui64 + (hash << 6) + (hash >> 2);
-    hash ^= v.z + 0x9E3779B9ui64 + (hash << 6) + (hash >> 2);
-    return hash;
+    uint64_t hash = 0;
+    hash ^= static_cast<uint64_t>(v.x) + 0x9E3779B9ULL + (hash << 6) + (hash >> 2);
+    hash ^= static_cast<uint64_t>(v.y) + 0x9E3779B9ULL + (hash << 6) + (hash >> 2);
+    hash ^= static_cast<uint64_t>(v.z) + 0x9E3779B9ULL + (hash << 6) + (hash >> 2);
+    return static_cast<int64_t>(hash);
 }
 
 constexpr int water_level = 64;
@@ -26,7 +26,7 @@ auto Octave::Compute(float x, float z, float seed) -> float {
     float v = 0.0f;
     float u = 1.0f;
     for (int i = 0; i < number; i++) {
-        v += db::perlin(x / u, z / u, seed + i + (offset * 32)) * u;
+        v += db::perlin(x / u, z / u, seed + float(i) + (float(offset) * 32.0f)) * u;
         u *= 2.0f;
     }
     return v;
@@ -82,7 +82,7 @@ static void PutFlower(Chunk& chunk, int x, int y, int z) {
 }
 
 void Generate(Chunk& chunk, const uint64_t seed) {
-    srand(static_cast<unsigned int>(seed + Hash(chunk.GetOffset())));
+    srand(static_cast<unsigned int>(seed + static_cast<uint64_t>(Hash(chunk.GetOffset()))));
 
     // Base noise
     Octave n = { 6, 0 };

@@ -56,17 +56,19 @@ constexpr std::array<float, 4 * 2> CUBE_UVS = {
 void BlockMeshParams::AppendFace(ChunkMesh& target) {
     if (transparent) {
         glm::vec3 face_position = chunk_position + position + glm::vec3 {
-            FACE_CENTERS[(direction * 3) + 0],
-            FACE_CENTERS[(direction * 3) + 1],
-            FACE_CENTERS[(direction * 3) + 2],
+            FACE_CENTERS[(static_cast<size_t>(direction) * 3) + 0],
+            FACE_CENTERS[(static_cast<size_t>(direction) * 3) + 1],
+            FACE_CENTERS[(static_cast<size_t>(direction) * 3) + 2],
         };
         size_t index_start = target.m_index_count;
         target.m_faces.push_back({ face_position, index_start, 0.0f });
     }
 
     // Emit vertices
-    for (int i = 0; i < 4; i++) {
-        const float* coords = &CUBE_COORDINATES[CUBE_INDICES[(direction * 6) + UNIQUE_INDICES[i]] * 3];
+    for (size_t i = 0; i < 4; i++) {
+        const float* coords = &CUBE_COORDINATES[
+            CUBE_INDICES[(static_cast<size_t>(direction) * 6) + UNIQUE_INDICES[i]] * 3
+        ];
         const float* uv = &CUBE_UVS[i * 2];
         
         glm::vec3 vertex_position = {
@@ -112,7 +114,7 @@ void BlockMeshParams::AppendSprite(ChunkMesh& target) {
         target.m_faces.push_back({ face_position, index_start, 0.0f });
     }
 
-    for (int i = 0; i < 8; i++) {
+    for (size_t i = 0; i < 8; i++) {
         const float* coords = &CUBE_COORDINATES[i * 3];
         const float* uv = &CUBE_UVS[(i % 4) * 2];
 
@@ -130,7 +132,7 @@ void BlockMeshParams::AppendSprite(ChunkMesh& target) {
         target.m_vertices.push_back({ vertex_position, vertex_tex_coords, glm::vec3(1.0f) });
     }
 
-    for (int i = 0; i < 12; i++) {
+    for (size_t i = 0; i < 12; i++) {
         target.m_indices.push_back({ target.m_vertex_count + SPRITE_INDICES[i] });
     }
 

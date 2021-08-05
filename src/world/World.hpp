@@ -5,6 +5,7 @@
 #include <vector>
 #include <functional>
 #include <cstdint>
+#include <cmath>
 
 #include "Chunk.hpp"
 #include "Player.hpp"
@@ -74,15 +75,15 @@ private:
 
 // world position (float) -> block position
 inline auto PositionToBlock(const glm::vec3& position) -> glm::ivec3 {
-    return (glm::ivec3)glm::floor(position);
+    return static_cast<glm::ivec3>(glm::floor(position));
 }
 
 // world position -> chunk offset
 inline auto BlockToOffset(const glm::ivec3& position) -> glm::ivec3 {
     return glm::ivec3 {
-        (int)std::floorf((float)position.x / chunk_size<glm::vec3>.x),
-        (int)0,
-        (int)std::floorf((float)position.z / chunk_size<glm::vec3>.z),
+        static_cast<int>(floorf(static_cast<float>(position.x) / chunk_size<glm::vec3>.x)),
+        0,
+        static_cast<int>(floorf(static_cast<float>(position.z) / chunk_size<glm::vec3>.z)),
     };
 }
 

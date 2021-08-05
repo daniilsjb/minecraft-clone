@@ -90,7 +90,7 @@ void Texture::LoadFromPath(const std::string& path) {
         assert(("Could not load texture at specified path", false));
     }
 
-    LoadFromPixels(data, m_size.x, m_size.y);
+    LoadFromPixels(data, static_cast<size_t>(m_size.x), static_cast<size_t>(m_size.y));
     stbi_image_free(data);
 }
 
@@ -115,8 +115,8 @@ auto Atlas::GetCoordinates(const glm::ivec2& position) const -> AtlasCoords {
         (                     position.x) * m_sprite_size.x,
         (m_dimensions.y - 1 - position.y) * m_sprite_size.y
     };
-    const auto uv_max = uv_min + (glm::vec2)m_sprite_size;
-    const auto size = (glm::vec2)GetSize();
+    const auto uv_max = uv_min + static_cast<glm::vec2>(m_sprite_size);
+    const auto size = static_cast<glm::vec2>(GetSize());
 
     return {
         uv_min / size,
