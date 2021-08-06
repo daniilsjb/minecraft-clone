@@ -13,7 +13,7 @@ enum class Biome {
 // Generic noise structure that, given a 2D position and a seed, produces a smooth noise value
 struct Noise {
     virtual ~Noise() = default;
-    virtual auto Compute(float x, float z, float seed) -> float = 0;
+    virtual auto compute(float x, float z, float seed) -> float = 0;
 };
 
 // Octave noise which sums up a sequence of values produced by the noise function
@@ -31,7 +31,7 @@ struct Octave : public Noise {
         , offset(t_offset) {
     }
 
-    auto Compute(float x, float z, float seed) -> float override;
+    auto compute(float x, float z, float seed) -> float override;
 };
 
 // Combined noise which merges outputs of other noises.
@@ -45,7 +45,7 @@ struct Combined : public Noise {
         , b(t_b) {
     }
 
-    auto Compute(float x, float z, float seed) -> float override;
+    auto compute(float x, float z, float seed) -> float override;
 };
 
-void Generate(Chunk& chunk, const uint64_t seed);
+void generate(Chunk& chunk, const uint64_t seed);

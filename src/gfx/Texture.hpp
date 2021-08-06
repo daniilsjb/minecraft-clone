@@ -19,19 +19,19 @@ public:
     Texture(Texture&& other) noexcept;
     Texture& operator=(Texture&& other) noexcept;
 
-    void Create();
-    void Destroy();
+    void create();
+    void destroy();
 
-    auto IsCreated() const -> bool;
+    auto is_created() const -> bool;
 
-    void Bind() const;
-    void LoadFromPixels(unsigned char* pixels, size_t width, size_t height);
-    void LoadFromPath(const std::string& path);
+    void bind() const;
+    void load_from_pixels(unsigned char* pixels, size_t width, size_t height);
+    void load_from_path(const std::string& path);
 
-    auto GetHandle() const -> unsigned int;
-    auto GetWidth() const -> int;
-    auto GetHeight() const -> int;
-    auto GetSize() const -> glm::ivec2;
+    auto get_handle() const -> unsigned int;
+    auto get_width() const -> int;
+    auto get_height() const -> int;
+    auto get_size() const -> glm::ivec2;
 
 private:
     unsigned int m_handle;
@@ -42,10 +42,10 @@ using AtlasCoords = std::tuple<glm::vec2, glm::vec2>;
 
 class Atlas : public Texture {
 public:
-    auto GetCoordinates(const glm::ivec2& position) const -> AtlasCoords;
+    auto get_coordinates(const glm::ivec2& position) const -> AtlasCoords;
 
-    auto GetSpriteSize() const -> glm::ivec2;
-    auto GetDimensions() const -> glm::ivec2;
+    auto get_sprite_size() const -> glm::ivec2;
+    auto get_dimensions() const -> glm::ivec2;
 
 private:
     // The size of each individual sprite within the atlas

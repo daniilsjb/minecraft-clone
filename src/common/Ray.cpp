@@ -1,6 +1,6 @@
 #include "Ray.hpp"
 
-auto Ray::Cast(float max_distance, const RayIntersect& intersect) const -> std::optional<RayHit> {
+auto Ray::cast(float max_distance, const RayIntersect& intersect) const -> std::optional<RayHit> {
     glm::ivec3 position = glm::floor(origin);
     glm::ivec3 step = glm::sign(direction);
 
@@ -27,7 +27,7 @@ auto Ray::Cast(float max_distance, const RayIntersect& intersect) const -> std::
 
                 position.x += step.x;
                 tmax.x += tdelta.x;
-                face = VectorToDirection({ -step.x, 0, 0 });
+                face = vector_to_direction({ -step.x, 0, 0 });
             } else {
                 if (tmax.z > radius) {
                     break;
@@ -35,7 +35,7 @@ auto Ray::Cast(float max_distance, const RayIntersect& intersect) const -> std::
 
                 position.z += step.z;
                 tmax.z += tdelta.z;
-                face = VectorToDirection({ 0, 0, -step.z });
+                face = vector_to_direction({ 0, 0, -step.z });
             }
         } else {
             if (tmax.y < tmax.z) {
@@ -45,7 +45,7 @@ auto Ray::Cast(float max_distance, const RayIntersect& intersect) const -> std::
 
                 position.y += step.y;
                 tmax.y += tdelta.y;
-                face = VectorToDirection({ 0, -step.y, 0 });
+                face = vector_to_direction({ 0, -step.y, 0 });
             } else {
                 if (tmax.z > radius) {
                     break;
@@ -53,7 +53,7 @@ auto Ray::Cast(float max_distance, const RayIntersect& intersect) const -> std::
 
                 position.z += step.z;
                 tmax.z += tdelta.z;
-                face = VectorToDirection({ 0, 0, -step.z });
+                face = vector_to_direction({ 0, 0, -step.z });
             }
         }
     }

@@ -6,49 +6,49 @@
 #include <ctime>
 #include <algorithm>
 
-void World::Create() {
-    m_player.Init();
+void World::create() {
+    m_player.init();
     m_seed = static_cast<uint64_t>(time(nullptr));
 
-    m_chunks.resize(world_area);
-    SetCenter(State::renderer->camera.position);
+    m_chunks.resize(WORLD_AREA);
+    set_center(State::renderer->camera.position);
 }
 
-void World::Destroy() {
-    m_player.Destroy();
+void World::destroy() {
+    m_player.destroy();
 
     m_chunks.clear();
     m_center = { 0, 0, 0 };
 }
 
-auto World::IsCreated() const -> bool {
+auto World::is_created() const -> bool {
     return !m_chunks.empty();
 }
 
-void World::Update(float dt) {
-    m_player.Update(dt);
+void World::update(float dt) {
+    m_player.update(dt);
 
     for (auto& chunk : m_chunks) {
-        chunk.Update();
+        chunk.update();
     }
 }
 
-void World::PrepareRender() {
+void World::prepare_render() {
     for (auto& chunk : m_chunks) {
-        chunk.PrepareRender();
+        chunk.prepare_render();
     }
 }
 
-void World::Render() const {
-    State::renderer->shaders[SHADER_CHUNK].Bind();
-    State::renderer->shaders[SHADER_CHUNK].SetUniform("u_projection", State::renderer->camera.projection);
-    State::renderer->shaders[SHADER_CHUNK].SetUniform("u_view", State::renderer->camera.view);
-    State::renderer->shaders[SHADER_CHUNK].SetUniform("u_atlas", 0);
+void World::render() const {
+    State::renderer->shaders[SHADER_CHUNK].bind();
+    State::renderer->shaders[SHADER_CHUNK].set_uniform("u_projection", State::renderer->camera.projection);
+    State::renderer->shaders[SHADER_CHUNK].set_uniform("u_view", State::renderer->camera.view);
+    State::renderer->shaders[SHADER_CHUNK].set_uniform("u_atlas", 0);
 
-    State::renderer->atlas.Bind();
+    State::renderer->atlas.bind();
 
     for (const auto& chunk : m_chunks) {
-        chunk.Render(false);
+        chunk.render(false);
     }
 
     // Draw chunks in the sorted order, from farthest to the nearest
@@ -58,9 +58,9 @@ void World::Render() const {
     };
 
     // Calculate offset and distance to each visible chunk
-    std::array<ChunkSort, world_area> sorted;
+    std::array<ChunkSort, WORLD_AREA> sorted;
     for (size_t i = 0; i < sorted.size(); i++) {
-        glm::ivec3 offset = m_chunks[i].GetOffset();
+        glm::ivec3 offset = m_chunks[i].get_offset();
         float distance = glm::distance(
             static_cast<glm::vec3>(offset),
             static_cast<glm::vec3>(m_offset)
@@ -77,15 +77,15 @@ void World::Render() const {
     // Render them by reconstructing indices from sorted offsets
     glDisable(GL_CULL_FACE);
     for (const auto& chunk : sorted) {
-        m_chunks[ChunkIndex(chunk.offset)].Render(true);
+        m_chunks[chunk_index(chunk.offset)].render(true);
     }
     glEnable(GL_CULL_FACE);
 }
 
-void World::SetCenter(const glm::ivec3& position) {
+void World::set_center(const glm::ivec3& position) {
     // Find the chunk containing new world center
-    glm::ivec3 new_offset = BlockToOffset(position);
-    glm::ivec3 new_center = new_offset - world_offset;
+    glm::ivec3 new_offset = block_to_offset(position);
+    glm::ivec3 new_center = new_offset - WORLD_OFFSET;
 
     // If didn't move, nothing needs to change
     if (m_center == new_center) {
@@ -94,100 +94,100 @@ void World::SetCenter(const glm::ivec3& position) {
     m_offset = new_offset;
     m_center = new_center;
 
-    // Move old chunks into another vector and setup a new collection of chunks
+    // Move old chunks into another vector and set up a new collection of chunks
     std::vector<Chunk> old;
     m_chunks.swap(old);
-    m_chunks.resize(world_area);
+    m_chunks.resize(WORLD_AREA);
 
     // Move old chunks back into the new set if they are still in bounds
     for (auto& chunk : old) {
-        if (chunk.IsCreated() && ChunkInBounds(chunk.GetOffset())) {
-            m_chunks[ChunkIndex(chunk.GetOffset())] = std::move(chunk);
+        if (chunk.is_created() && chunk_in_bounds(chunk.get_offset())) {
+            m_chunks[chunk_index(chunk.get_offset())] = std::move(chunk);
         }
     }
 
     // Everything else needs to be created manually
-    CreateMissingChunks();
+    create_missing_chunks();
 }
 
-auto World::ChunkInBounds(const glm::ivec3& offset) const -> bool {
+auto World::chunk_in_bounds(const glm::ivec3& offset) const -> bool {
     const glm::ivec3 p = offset - m_center;
-    return (p.x >= 0 && p.x < world_size<>.x) && 
-           (p.z >= 0 && p.z < world_size<>.z);
+    return (p.x >= 0 && p.x < WORLD_SIZE<>.x) &&
+           (p.z >= 0 && p.z < WORLD_SIZE<>.z);
 }
 
-auto World::BlockInBounds(const glm::ivec3& position) const -> bool {
-    return ChunkInBounds(BlockToOffset(position));
+auto World::block_in_bounds(const glm::ivec3& position) const -> bool {
+    return chunk_in_bounds(block_to_offset(position));
 }
 
-auto World::ContainsChunk(const glm::ivec3& offset) const -> bool {
-    if (!ChunkInBounds(offset)) {
+auto World::contains_chunk(const glm::ivec3& offset) const -> bool {
+    if (!chunk_in_bounds(offset)) {
         return false;
     }
 
-    return m_chunks[ChunkIndex(offset)].IsCreated();
+    return m_chunks[chunk_index(offset)].is_created();
 }
 
-auto World::Contains(const glm::ivec3& position) const -> bool {
-    return ContainsChunk(BlockToOffset(position));
+auto World::contains(const glm::ivec3& position) const -> bool {
+    return contains_chunk(block_to_offset(position));
 }
 
-auto World::ChunkIndex(const glm::ivec3& offset) const -> size_t {
+auto World::chunk_index(const glm::ivec3& offset) const -> size_t {
     const glm::ivec3 p = offset - m_center;
-    return static_cast<size_t>(p.z) * static_cast<size_t>(chunk_size<>.x) + static_cast<size_t>(p.x);
+    return static_cast<size_t>(p.z) * static_cast<size_t>(CHUNK_SIZE<>.x) + static_cast<size_t>(p.x);
 }
 
-auto World::ChunkOffset(const size_t index) const -> glm::ivec3 {
+auto World::chunk_offset(const size_t index) const -> glm::ivec3 {
     return m_center + glm::ivec3 {
-        index % chunk_size<>.x, 0, index / chunk_size<>.z
+        index % CHUNK_SIZE<>.x, 0, index / CHUNK_SIZE<>.z
     };
 }
 
-auto World::GetBlock(const glm::ivec3& position) const -> Block {
-    const glm::ivec3 offset = BlockToOffset(position);
-    if (position.y >= 0 && position.y < chunk_size<>.y && ContainsChunk(offset)) {
-        return GetChunk(offset).GetBlock(BlockToChunk(position));
+auto World::get_block(const glm::ivec3& position) const -> Block {
+    const glm::ivec3 offset = block_to_offset(position);
+    if (position.y >= 0 && position.y < CHUNK_SIZE<>.y && contains_chunk(offset)) {
+        return get_chunk(offset).get_block(block_to_chunk(position));
     }
     return { BLOCK_AIR };
 }
 
-void World::SetBlock(const glm::ivec3& position, Block block) {
-    const glm::ivec3 offset = BlockToOffset(position);
-    if (ContainsChunk(offset)) {
-        m_chunks[ChunkIndex(offset)].SetBlock(BlockToChunk(position), block);
+void World::set_block(const glm::ivec3& position, Block block) {
+    const glm::ivec3 offset = block_to_offset(position);
+    if (contains_chunk(offset)) {
+        m_chunks[chunk_index(offset)].set_block(block_to_chunk(position), block);
     } else {
         m_queued_blocks.push_back({ position, block });
     }
 }
 
-auto World::GetChunk(const glm::ivec3& offset) const -> const Chunk& {
-    return m_chunks[ChunkIndex(offset)];
+auto World::get_chunk(const glm::ivec3& offset) const -> const Chunk& {
+    return m_chunks[chunk_index(offset)];
 }
 
-auto World::GetChunk(const glm::ivec3& offset) -> Chunk& {
-    return m_chunks[ChunkIndex(offset)];
+auto World::get_chunk(const glm::ivec3& offset) -> Chunk& {
+    return m_chunks[chunk_index(offset)];
 }
 
-auto World::GetSeed() const -> uint64_t {
+auto World::get_seed() const -> uint64_t {
     return m_seed;
 }
 
-auto World::GetPlayer() -> Player* {
+auto World::get_player() -> Player* {
     return &m_player;
 }
 
-void World::CreateMissingChunks() {
-    for (size_t i = 0; i < world_area; i++) {
+void World::create_missing_chunks() {
+    for (size_t i = 0; i < WORLD_AREA; i++) {
         Chunk& chunk = m_chunks[i];
 
-        if (!chunk.IsCreated()) {
-            chunk.Create(this, ChunkOffset(i));
+        if (!chunk.is_created()) {
+            chunk.create(this, chunk_offset(i));
         }
     }
 
     for (auto it = m_queued_blocks.begin(); it != m_queued_blocks.end();) {
-        if (Contains(it->position)) {
-            SetBlock(it->position, it->block);
+        if (contains(it->position)) {
+            set_block(it->position, it->block);
             it = m_queued_blocks.erase(it);
         } else {
             it++;

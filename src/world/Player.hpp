@@ -15,7 +15,7 @@ public:
     bool changed_offset { false };
     glm::ivec3 offset;
 
-    void Init();
-    void Update(float dt);
-    void Destroy();
+    void init();
+    void update(float dt);
+    void destroy();
 };

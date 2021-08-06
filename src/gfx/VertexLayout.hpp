@@ -14,21 +14,21 @@ struct VertexElement {
     VertexElement() = default;
     VertexElement(unsigned int t_type, unsigned int t_count, unsigned char t_normalized, unsigned int t_offset);
 
-    static unsigned int SizeOf(unsigned int type);
+    static auto size_of(unsigned int type) -> unsigned int;
 };
 
 class VertexLayout {
 public:
     template<typename T>
-    void PushAttribute(unsigned int count, unsigned char normalized = false) {
+    void push_attribute(unsigned int count, unsigned char normalized = false) {
         assert(false);
     }
 
-    const std::vector<VertexElement>& GetElements() const {
+    auto get_elements() const -> const std::vector<VertexElement>& {
         return m_elements;
     }
 
-    unsigned int GetStride() const {
+    auto get_stride() const -> unsigned int {
         return m_stride;
     }
 
@@ -36,45 +36,45 @@ private:
     std::vector<VertexElement> m_elements;
     unsigned int m_stride { 0 };
 
-    void PushTypedAttribute(unsigned int type, unsigned int count, unsigned char normalized);
+    void push_typed_attribute(unsigned int type, unsigned int count, unsigned char normalized);
 };
 
 template<>
-inline void VertexLayout::PushAttribute<char>(unsigned int count, unsigned char normalized) {
-    PushTypedAttribute(GL_BYTE, count, normalized);
+inline void VertexLayout::push_attribute<char>(unsigned int count, unsigned char normalized) {
+    push_typed_attribute(GL_BYTE, count, normalized);
 }
 
 template<>
-inline void VertexLayout::PushAttribute<unsigned char>(unsigned int count, unsigned char normalized) {
-    PushTypedAttribute(GL_UNSIGNED_BYTE, count, normalized);
+inline void VertexLayout::push_attribute<unsigned char>(unsigned int count, unsigned char normalized) {
+    push_typed_attribute(GL_UNSIGNED_BYTE, count, normalized);
 }
 
 template<>
-inline void VertexLayout::PushAttribute<short>(unsigned int count, unsigned char normalized) {
-    PushTypedAttribute(GL_SHORT, count, normalized);
+inline void VertexLayout::push_attribute<short>(unsigned int count, unsigned char normalized) {
+    push_typed_attribute(GL_SHORT, count, normalized);
 }
 
 template<>
-inline void VertexLayout::PushAttribute<unsigned short>(unsigned int count, unsigned char normalized) {
-    PushTypedAttribute(GL_UNSIGNED_SHORT, count, normalized);
+inline void VertexLayout::push_attribute<unsigned short>(unsigned int count, unsigned char normalized) {
+    push_typed_attribute(GL_UNSIGNED_SHORT, count, normalized);
 }
 
 template<>
-inline void VertexLayout::PushAttribute<int>(unsigned int count, unsigned char normalized) {
-    PushTypedAttribute(GL_INT, count, normalized);
+inline void VertexLayout::push_attribute<int>(unsigned int count, unsigned char normalized) {
+    push_typed_attribute(GL_INT, count, normalized);
 }
 
 template<>
-inline void VertexLayout::PushAttribute<unsigned int>(unsigned int count, unsigned char normalized) {
-    PushTypedAttribute(GL_UNSIGNED_INT, count, normalized);
+inline void VertexLayout::push_attribute<unsigned int>(unsigned int count, unsigned char normalized) {
+    push_typed_attribute(GL_UNSIGNED_INT, count, normalized);
 }
 
 template<>
-inline void VertexLayout::PushAttribute<float>(unsigned int count, unsigned char normalized) {
-    PushTypedAttribute(GL_FLOAT, count, normalized);
+inline void VertexLayout::push_attribute<float>(unsigned int count, unsigned char normalized) {
+    push_typed_attribute(GL_FLOAT, count, normalized);
 }
 
 template<>
-inline void VertexLayout::PushAttribute<double>(unsigned int count, unsigned char normalized) {
-    PushTypedAttribute(GL_DOUBLE, count, normalized);
+inline void VertexLayout::push_attribute<double>(unsigned int count, unsigned char normalized) {
+    push_typed_attribute(GL_DOUBLE, count, normalized);
 }

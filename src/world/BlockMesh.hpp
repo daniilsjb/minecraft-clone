@@ -21,9 +21,9 @@ struct BlockMeshParams {
     // Does the block contain any transparent or translucent pixels?
     bool transparent;
 
-    // Is the block liquid, i.e. should it be shortened on the y axis?
+    // Is the block liquid, i.e. should it be shortened on the y-axis?
     bool liquid;
 
-	void AppendFace(ChunkMesh& target);
-	void AppendSprite(ChunkMesh& target);
+	void append_face(ChunkMesh& target);
+	void append_sprite(ChunkMesh& target);
 };

@@ -104,7 +104,7 @@ struct Blocks {
     }};
 };
 
-// Block instance as stored in chunks
+// Block instances as stored in chunks
 struct Block {
     unsigned int id;
 };

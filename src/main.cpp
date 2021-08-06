@@ -7,19 +7,19 @@ auto main() -> int {
     // The main window with OpenGL context
     Window window;
     State::window = &window;
-    window.Create("Minecraft Clone", 1280, 720);
+    window.create("Minecraft Clone", 1280, 720);
 
     // The renderer and all associated rendering data
     Renderer renderer;
     State::renderer = &renderer;
-    renderer.Init();
+    renderer.init();
 
     // The world of the game instance
     World world;
     State::world = &world;
-    world.Create();
+    world.create();
 
     // Start the game
-    window.Start();
+    window.start();
     return EXIT_SUCCESS;
 }

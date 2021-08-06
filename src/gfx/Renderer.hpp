@@ -38,14 +38,14 @@ public:
         bool wireframe : 1;
     } flags {};
 
-    void Init();
-    void Update(float dt);
+    void init();
+    void update(float dt);
 
-    void Begin() const;
-    void End() const;
+    void begin() const;
+    void end() const;
 
-    void RenderQuad() const;
-    void RenderPlane() const;
+    void render_quad() const;
+    void render_plane() const;
 
 private:
     VertexBuffer m_vbo, m_ibo;

@@ -4,15 +4,15 @@
 
 #include "../world/World.hpp"
 
-static auto Random(const int min, const int max) -> int {
+static auto random(const int min, const int max) -> int {
     return (rand() % (max - min + 1)) + min;
 }
 
-static auto Chance(const double percent) -> bool {
-    return static_cast<double>(Random(0, 100000)) / 100000.0 <= percent;
+static auto chance(const double percent) -> bool {
+    return static_cast<double>(random(0, 100000)) / 100000.0 <= percent;
 }
 
-constexpr auto Hash(const glm::ivec3& v) -> int64_t {
+constexpr auto hash(const glm::ivec3& v) -> int64_t {
     uint64_t hash = 0;
     hash ^= static_cast<uint64_t>(v.x) + 0x9E3779B9ULL + (hash << 6) + (hash >> 2);
     hash ^= static_cast<uint64_t>(v.y) + 0x9E3779B9ULL + (hash << 6) + (hash >> 2);
@@ -20,9 +20,9 @@ constexpr auto Hash(const glm::ivec3& v) -> int64_t {
     return static_cast<int64_t>(hash);
 }
 
-constexpr int water_level = 64;
+constexpr int WATER_LEVEL = 64;
 
-auto Octave::Compute(float x, float z, float seed) -> float {
+auto Octave::compute(float x, float z, float seed) -> float {
     float v = 0.0f;
     float u = 1.0f;
     for (int i = 0; i < number; i++) {
@@ -32,24 +32,24 @@ auto Octave::Compute(float x, float z, float seed) -> float {
     return v;
 }
 
-auto Combined::Compute(float x, float z, float seed) -> float {
-    return a->Compute(x + b->Compute(x, z, seed), z, seed);
+auto Combined::compute(float x, float z, float seed) -> float {
+    return a->compute(x + b->compute(x, z, seed), z, seed);
 }
 
-static void PutTree(Chunk& chunk, int x, int y, int z) {
-    int height = Random(4, 6);
+static void put_tree(Chunk& chunk, int x, int y, int z) {
+    int height = random(4, 6);
 
     Block trunk = { BLOCK_OAK };
     Block leaves = { BLOCK_LEAVES };
 
     for (int i = 0; i < height; i++) {
-        chunk.SetBlock({ x, y + i, z }, trunk);
+        chunk.set_block({ x, y + i, z }, trunk);
     }
 
     int top_start = y + height - 1;
     int top = top_start;
 
-    int radius = Random(2, 3);
+    int radius = random(2, 3);
     while (radius > 0) {
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dz = -radius; dz <= radius; dz++) {
@@ -58,11 +58,11 @@ static void PutTree(Chunk& chunk, int x, int y, int z) {
                 }
 
                 bool corner = (std::abs(dx) == radius) && (std::abs(dz) == radius);
-                if (corner && Chance(0.15)) {
+                if (corner && chance(0.15)) {
                     continue;
                 }
 
-                chunk.GetWorld()->SetBlock(chunk.GetPosition() + glm::ivec3 { x + dx, top, z + dz }, leaves);
+                chunk.get_world()->set_block(chunk.get_position() + glm::ivec3 { x + dx, top, z + dz }, leaves);
             }
         }
 
@@ -71,18 +71,18 @@ static void PutTree(Chunk& chunk, int x, int y, int z) {
     }
 }
 
-static void PutFlower(Chunk& chunk, int x, int y, int z) {
+static void put_flower(Chunk& chunk, int x, int y, int z) {
     unsigned int id = BLOCK_RED_FLOWER;
-    switch (Random(0, 1)) {
+    switch (random(0, 1)) {
         case 0: id = BLOCK_RED_FLOWER; break; 
         case 1: id = BLOCK_YELLOW_FLOWER; break; 
     }
 
-    chunk.SetBlock({ x, y, z }, Block { id });
+    chunk.set_block({ x, y, z }, Block { id });
 }
 
-void Generate(Chunk& chunk, const uint64_t seed) {
-    srand(static_cast<unsigned int>(seed + static_cast<uint64_t>(Hash(chunk.GetOffset()))));
+void generate(Chunk& chunk, const uint64_t seed) {
+    srand(static_cast<unsigned int>(seed + static_cast<uint64_t>(hash(chunk.get_offset()))));
 
     // Base noise
     Octave n = { 6, 0 };
@@ -102,19 +102,19 @@ void Generate(Chunk& chunk, const uint64_t seed) {
         { &os[2], &os[3] },
     };
 
-    for (int x = 0; x < chunk_size<>.x; x++) {
-        for (int z = 0; z < chunk_size<>.z; z++) {
+    for (int x = 0; x < CHUNK_SIZE<>.x; x++) {
+        for (int z = 0; z < CHUNK_SIZE<>.z; z++) {
             // Find the block's world position
-            float wx = static_cast<float>(chunk.GetPosition().x + x);
-            float wz = static_cast<float>(chunk.GetPosition().z + z);
+            float wx = static_cast<float>(chunk.get_position().x + x);
+            float wz = static_cast<float>(chunk.get_position().z + z);
 
             // Sample combined noise functions to retrieve high and low results
             const float scale = 1.3f;
-            float hl = (cs[0].Compute(wx * scale, wz * scale, static_cast<float>(seed)) / 6.0f) - 4.0f;
-            float hh = (cs[1].Compute(wx * scale, wz * scale, static_cast<float>(seed)) / 5.0f) + 6.0f;
+            float hl = (cs[0].compute(wx * scale, wz * scale, static_cast<float>(seed)) / 6.0f) - 4.0f;
+            float hh = (cs[1].compute(wx * scale, wz * scale, static_cast<float>(seed)) / 5.0f) + 6.0f;
 
             // Sample the base noise
-            float t = n.Compute(wx, wz, static_cast<float>(seed));
+            float t = n.compute(wx, wz, static_cast<float>(seed));
 
             float hr;
             if (t > 0) {
@@ -123,12 +123,12 @@ void Generate(Chunk& chunk, const uint64_t seed) {
                 hr = std::max(hl, hh);
             }
 
-            int h = static_cast<int>(hr) + water_level;
+            int h = static_cast<int>(hr) + WATER_LEVEL;
 
             Biome biome;
-            if (h < water_level) {
+            if (h < WATER_LEVEL) {
                 biome = Biome::OCEAN;
-            } else if (t < 0.08f && h < water_level + 2) {
+            } else if (t < 0.08f && h < WATER_LEVEL + 2) {
                 biome = Biome::BEACH;
             } else {
                 biome = Biome::PLAINS;
@@ -159,18 +159,18 @@ void Generate(Chunk& chunk, const uint64_t seed) {
                     id = BLOCK_STONE;
                 }
 
-                chunk.SetBlock({ x, y, z }, Block { id });
+                chunk.set_block({ x, y, z }, Block { id });
             }
 
-            for (int y = h; y < water_level; y++) {
-                chunk.SetBlock({ x, y, z }, Block { BLOCK_WATER });
+            for (int y = h; y < WATER_LEVEL; y++) {
+                chunk.set_block({ x, y, z }, Block { BLOCK_WATER });
             }
 
             if (biome == Biome::PLAINS) {
-                if (Chance(0.002)) {
-                    PutTree(chunk, x, h, z);
-                } else if (Chance(0.01)) {
-                    PutFlower(chunk, x, h, z);
+                if (chance(0.002)) {
+                    put_tree(chunk, x, h, z);
+                } else if (chance(0.01)) {
+                    put_flower(chunk, x, h, z);
                 }
             }
         }

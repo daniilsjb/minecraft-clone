@@ -22,5 +22,5 @@ struct Ray {
     glm::vec3 origin;
     glm::vec3 direction;
 
-    auto Cast(float max_distance, const RayIntersect& intersect) const -> std::optional<RayHit>;
+    auto cast(float max_distance, const RayIntersect& intersect) const -> std::optional<RayHit>;
 };

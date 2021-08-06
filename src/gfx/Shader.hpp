@@ -17,33 +17,33 @@ public:
     Shader(Shader&& other) noexcept;
     Shader& operator=(Shader&& other) noexcept;
 
-    void Create();
-    void Destroy();
+    void create();
+    void destroy();
 
-    auto IsCreated() const -> bool;
+    auto is_created() const -> bool;
 
-    void Bind() const;
-    void LoadFromString(const std::string& vert, const std::string& frag);
-    void LoadFromPath(const std::string& vert_path, const std::string& frag_path);
+    void bind() const;
+    void load_from_string(const std::string& vert, const std::string& frag);
+    void load_from_path(const std::string& vert_path, const std::string& frag_path);
 
-    void SetUniform(const std::string& name, const float value) const;
-    void SetUniform(const std::string& name, const int value) const;
-    void SetUniform(const std::string& name, const unsigned int value) const;
-    void SetUniform(const std::string& name, const glm::vec2& value) const;
-    void SetUniform(const std::string& name, const glm::vec3& value) const;
-    void SetUniform(const std::string& name, const glm::vec4& value) const;
-    void SetUniform(const std::string& name, const glm::mat2& value) const;
-    void SetUniform(const std::string& name, const glm::mat3& value) const;
-    void SetUniform(const std::string& name, const glm::mat4& value) const;
+    void set_uniform(const std::string& name, const float value) const;
+    void set_uniform(const std::string& name, const int value) const;
+    void set_uniform(const std::string& name, const unsigned int value) const;
+    void set_uniform(const std::string& name, const glm::vec2& value) const;
+    void set_uniform(const std::string& name, const glm::vec3& value) const;
+    void set_uniform(const std::string& name, const glm::vec4& value) const;
+    void set_uniform(const std::string& name, const glm::mat2& value) const;
+    void set_uniform(const std::string& name, const glm::mat3& value) const;
+    void set_uniform(const std::string& name, const glm::mat4& value) const;
 
-    auto GetHandle() const -> unsigned int;
-    auto GetLocation(const std::string& name) const -> int;
+    auto get_handle() const -> unsigned int;
+    auto get_location(const std::string& name) const -> int;
 
 private:
     unsigned int m_handle { 0 };
 
-    auto ReadShaderFile(const std::string& path) const -> std::string;
+    auto read_shader_file(const std::string& path) const -> std::string;
 
-    auto AttachShader(unsigned int type, const std::string& source) const -> unsigned int;
-    void LinkProgram() const;
+    auto attach_shader(unsigned int type, const std::string& source) const -> unsigned int;
+    void link_program() const;
 };

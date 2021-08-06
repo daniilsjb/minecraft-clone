@@ -14,7 +14,7 @@ enum Direction {
     DOWN = 5
 };
 
-constexpr std::array<glm::ivec3, 6> directions = {{
+constexpr std::array<glm::ivec3, 6> DIRECTIONS = {{
     {  0,  0, -1 },
     {  0,  0,  1 },
     {  1,  0,  0 },
@@ -23,13 +23,13 @@ constexpr std::array<glm::ivec3, 6> directions = {{
     {  0, -1,  0 }
 }};
 
-constexpr auto DirectionToVector(Direction d) -> glm::ivec3 {
-    return directions[static_cast<size_t>(d)];
+constexpr auto direction_to_vector(Direction d) -> glm::ivec3 {
+    return DIRECTIONS[static_cast<size_t>(d)];
 }
 
-constexpr auto VectorToDirection(const glm::ivec3& v) -> Direction {
+constexpr auto vector_to_direction(const glm::ivec3& v) -> Direction {
     for (size_t i = 0; i < 6; i++) {
-        if (directions[i] == v) {
+        if (DIRECTIONS[i] == v) {
             return static_cast<Direction>(i);
         }
     }

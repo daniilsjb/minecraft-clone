@@ -18,11 +18,11 @@ struct KeyState {
 struct Keyboard {
     std::array<KeyState, GLFW_KEY_LAST + 1> keys {};
 
-    void Update(float dt);
+    void update(float dt);
 
-    bool IsDown(unsigned int id) const;
-    bool IsPressed(unsigned int id) const;
-    bool IsReleased(unsigned int id) const;
+    auto is_down(unsigned int id) const -> bool;
+    auto is_pressed(unsigned int id) const -> bool;
+    auto is_released(unsigned int id) const -> bool;
 };
 
 struct Mouse {
@@ -31,11 +31,11 @@ struct Mouse {
     glm::dvec2 pos { 0.0, 0.0 };
     glm::dvec2 delta { 0.0, 0.0 };
 
-    void Update(float dt);
+    void update(float dt);
 
-    bool IsDown(unsigned int id) const;
-    bool IsPressed(unsigned int id) const;
-    bool IsReleased(unsigned int id) const;
+    auto is_down(unsigned int id) const -> bool;
+    auto is_pressed(unsigned int id) const -> bool;
+    auto is_released(unsigned int id) const -> bool;
 };
 
 class Window {
@@ -54,20 +54,20 @@ public:
 
     ~Window();
 
-    void Create(const std::string& name, int width, int height);
-    void Destroy();
+    void create(const std::string& name, int width, int height);
+    void destroy();
 
-    void Start();
-    void Update(float dt);
+    void start();
+    void update(float dt);
 
-    void OnResize(GLFWwindow* handle, int width, int height);
-    void OnKey(GLFWwindow* handle, int key, int scancode, int action, int mods);
-    void OnCursor(GLFWwindow* handle, double x, double y);
-    void OnMouse(GLFWwindow* handle, int button, int action, int mods);
+    void on_resize(GLFWwindow* handle, int width, int height);
+    void on_key(GLFWwindow* handle, int key, int scancode, int action, int mods);
+    void on_cursor(GLFWwindow* handle, double x, double y);
+    void on_mouse(GLFWwindow* handle, int button, int action, int mods);
 
-    auto GetHandle() const -> GLFWwindow*;
-    auto GetWidth() const -> int;
-    auto GetHeight() const -> int;
+    auto get_handle() const -> GLFWwindow*;
+    auto get_width() const -> int;
+    auto get_height() const -> int;
 
 private:
     GLFWwindow* m_handle { nullptr };

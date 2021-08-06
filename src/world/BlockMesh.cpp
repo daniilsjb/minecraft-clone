@@ -53,7 +53,7 @@ constexpr std::array<float, 4 * 2> CUBE_UVS = {
     1.0f, 1.0f,
 };
 
-void BlockMeshParams::AppendFace(ChunkMesh& target) {
+void BlockMeshParams::append_face(ChunkMesh& target) {
     if (transparent) {
         glm::vec3 face_position = chunk_position + position + glm::vec3 {
             FACE_CENTERS[(static_cast<size_t>(direction) * 3) + 0],
@@ -107,7 +107,7 @@ void BlockMeshParams::AppendFace(ChunkMesh& target) {
     target.m_index_count += 6;
 }
 
-void BlockMeshParams::AppendSprite(ChunkMesh& target) {
+void BlockMeshParams::append_sprite(ChunkMesh& target) {
     for (size_t i = 0; i < 2; i++) {
         glm::vec3 face_position = chunk_position + position;
         size_t index_start = target.m_index_count + (i * 6);

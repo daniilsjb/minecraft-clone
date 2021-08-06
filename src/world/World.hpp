@@ -11,48 +11,48 @@
 #include "Player.hpp"
 
 template<typename T = glm::ivec3>
-constexpr T world_size = T(16, 0, 16);
+constexpr T WORLD_SIZE = T(16, 0, 16);
 
-constexpr int world_area =
-    world_size<>.x *
-    world_size<>.z;
+constexpr int WORLD_AREA =
+    WORLD_SIZE<>.x *
+    WORLD_SIZE<>.z;
 
-constexpr auto world_offset = glm::ivec3 {
-    world_size<>.x / 2,
+constexpr auto WORLD_OFFSET = glm::ivec3 {
+    WORLD_SIZE<>.x / 2,
     0,
-    world_size<>.z / 2
+    WORLD_SIZE<>.z / 2
 };
 
 class World {
 public:
-    void Create();
-    void Destroy();
+    void create();
+    void destroy();
 
-    auto IsCreated() const -> bool;
+    auto is_created() const -> bool;
 
-    void Update(float dt);
-    void PrepareRender();
-    void Render() const;
+    void update(float dt);
+    void prepare_render();
+    void render() const;
 
-    void SetCenter(const glm::ivec3& position);
+    void set_center(const glm::ivec3& position);
 
-    auto ChunkInBounds(const glm::ivec3& offset) const -> bool;
-    auto BlockInBounds(const glm::ivec3& position) const -> bool;
+    auto chunk_in_bounds(const glm::ivec3& offset) const -> bool;
+    auto block_in_bounds(const glm::ivec3& position) const -> bool;
 
-    auto ContainsChunk(const glm::ivec3& offset) const -> bool;
-    auto Contains(const glm::ivec3& position) const -> bool;
+    auto contains_chunk(const glm::ivec3& offset) const -> bool;
+    auto contains(const glm::ivec3& position) const -> bool;
 
-    auto ChunkIndex(const glm::ivec3& offset) const -> size_t;
-    auto ChunkOffset(const size_t index) const -> glm::ivec3;
+    auto chunk_index(const glm::ivec3& offset) const -> size_t;
+    auto chunk_offset(const size_t index) const -> glm::ivec3;
 
-    auto GetBlock(const glm::ivec3& position) const -> Block;
-    void SetBlock(const glm::ivec3& position, Block block);
+    auto get_block(const glm::ivec3& position) const -> Block;
+    void set_block(const glm::ivec3& position, Block block);
 
-    auto GetChunk(const glm::ivec3& offset) const -> const Chunk&;
-    auto GetChunk(const glm::ivec3& offset) -> Chunk&;
+    auto get_chunk(const glm::ivec3& offset) const -> const Chunk&;
+    auto get_chunk(const glm::ivec3& offset) -> Chunk&;
 
-    auto GetSeed() const -> uint64_t;
-    auto GetPlayer() -> Player*;
+    auto get_seed() const -> uint64_t;
+    auto get_player() -> Player*;
 
 private:
     std::vector<Chunk> m_chunks;
@@ -70,24 +70,24 @@ private:
 
     uint64_t m_seed;
 
-    void CreateMissingChunks();
+    void create_missing_chunks();
 };
 
 // world position (float) -> block position
-inline auto PositionToBlock(const glm::vec3& position) -> glm::ivec3 {
+inline auto position_to_block(const glm::vec3& position) -> glm::ivec3 {
     return static_cast<glm::ivec3>(glm::floor(position));
 }
 
 // world position -> chunk offset
-inline auto BlockToOffset(const glm::ivec3& position) -> glm::ivec3 {
+inline auto block_to_offset(const glm::ivec3& position) -> glm::ivec3 {
     return glm::ivec3 {
-        static_cast<int>(floorf(static_cast<float>(position.x) / chunk_size<glm::vec3>.x)),
+        static_cast<int>(floorf(static_cast<float>(position.x) / CHUNK_SIZE<glm::vec3>.x)),
         0,
-        static_cast<int>(floorf(static_cast<float>(position.z) / chunk_size<glm::vec3>.z)),
+        static_cast<int>(floorf(static_cast<float>(position.z) / CHUNK_SIZE<glm::vec3>.z)),
     };
 }
 
 // world position -> chunk position
-constexpr auto BlockToChunk(const glm::ivec3& position) -> glm::ivec3 {
-    return ((position % chunk_size<>) + chunk_size<>) % chunk_size<>;
+constexpr auto block_to_chunk(const glm::ivec3& position) -> glm::ivec3 {
+    return ((position % CHUNK_SIZE<>) + CHUNK_SIZE<>) % CHUNK_SIZE<>;
 }

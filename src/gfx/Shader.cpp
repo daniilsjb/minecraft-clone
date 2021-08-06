@@ -10,11 +10,11 @@
 
 Shader::Shader(const std::string& vert_path, const std::string& frag_path) {
     m_handle = glCreateProgram();
-    LoadFromPath(vert_path, frag_path);
+    load_from_path(vert_path, frag_path);
 }
 
 Shader::~Shader() {
-    Destroy();
+    destroy();
 }
 
 Shader::Shader(Shader&& other) noexcept
@@ -24,7 +24,7 @@ Shader::Shader(Shader&& other) noexcept
 
 Shader& Shader::operator=(Shader&& other) noexcept {
     if (this != &other) {
-        Destroy();
+        destroy();
 
         m_handle = other.m_handle;
         other.m_handle = 0;
@@ -33,99 +33,99 @@ Shader& Shader::operator=(Shader&& other) noexcept {
     return *this;
 }
 
-void Shader::Create() {
+void Shader::create() {
     m_handle = glCreateProgram();
 }
 
-void Shader::Destroy() {
+void Shader::destroy() {
     glDeleteProgram(m_handle);
     m_handle = 0;
 }
 
-auto Shader::IsCreated() const -> bool {
+auto Shader::is_created() const -> bool {
     return m_handle != 0;
 }
 
-void Shader::Bind() const {
+void Shader::bind() const {
     glUseProgram(m_handle);
 }
 
-void Shader::LoadFromString(const std::string& vert, const std::string& frag) {
-    if (IsCreated()) {
-        Destroy();
+void Shader::load_from_string(const std::string& vert, const std::string& frag) {
+    if (is_created()) {
+        destroy();
     }
-    Create();
+    create();
 
-    const unsigned int vertID = AttachShader(GL_VERTEX_SHADER, vert);
-    const unsigned int fragID = AttachShader(GL_FRAGMENT_SHADER, frag);
+    const unsigned int vert_id = attach_shader(GL_VERTEX_SHADER, vert);
+    const unsigned int frag_id = attach_shader(GL_FRAGMENT_SHADER, frag);
 
-    LinkProgram();
-    glDeleteShader(vertID);
-    glDeleteShader(fragID);
+    link_program();
+    glDeleteShader(vert_id);
+    glDeleteShader(frag_id);
 }
 
-void Shader::LoadFromPath(const std::string& vert_path, const std::string& frag_path) {
-    LoadFromString(ReadShaderFile(vert_path), ReadShaderFile(frag_path));
+void Shader::load_from_path(const std::string& vert_path, const std::string& frag_path) {
+    load_from_string(read_shader_file(vert_path), read_shader_file(frag_path));
 }
 
-void Shader::SetUniform(const std::string& name, const float value) const {
-    glUniform1f(GetLocation(name), value);
+void Shader::set_uniform(const std::string& name, const float value) const {
+    glUniform1f(get_location(name), value);
 }
 
-void Shader::SetUniform(const std::string& name, const int value) const {
-    glUniform1i(GetLocation(name), value);
+void Shader::set_uniform(const std::string& name, const int value) const {
+    glUniform1i(get_location(name), value);
 }
 
-void Shader::SetUniform(const std::string& name, const unsigned int value) const {
-    glUniform1ui(GetLocation(name), value);
+void Shader::set_uniform(const std::string& name, const unsigned int value) const {
+    glUniform1ui(get_location(name), value);
 }
 
-void Shader::SetUniform(const std::string& name, const glm::vec2& value) const {
-    glUniform2fv(GetLocation(name), 1, glm::value_ptr(value));
+void Shader::set_uniform(const std::string& name, const glm::vec2& value) const {
+    glUniform2fv(get_location(name), 1, glm::value_ptr(value));
 }
 
-void Shader::SetUniform(const std::string& name, const glm::vec3& value) const {
-    glUniform3fv(GetLocation(name), 1, glm::value_ptr(value));
+void Shader::set_uniform(const std::string& name, const glm::vec3& value) const {
+    glUniform3fv(get_location(name), 1, glm::value_ptr(value));
 }
 
-void Shader::SetUniform(const std::string& name, const glm::vec4& value) const {
-    glUniform4fv(GetLocation(name), 1, glm::value_ptr(value));
+void Shader::set_uniform(const std::string& name, const glm::vec4& value) const {
+    glUniform4fv(get_location(name), 1, glm::value_ptr(value));
 }
 
-void Shader::SetUniform(const std::string& name, const glm::mat2& value) const {
-    glUniformMatrix2fv(GetLocation(name), 1, GL_FALSE, glm::value_ptr(value));
+void Shader::set_uniform(const std::string& name, const glm::mat2& value) const {
+    glUniformMatrix2fv(get_location(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-void Shader::SetUniform(const std::string& name, const glm::mat3& value) const {
-    glUniformMatrix3fv(GetLocation(name), 1, GL_FALSE, glm::value_ptr(value));
+void Shader::set_uniform(const std::string& name, const glm::mat3& value) const {
+    glUniformMatrix3fv(get_location(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-void Shader::SetUniform(const std::string& name, const glm::mat4& value) const {
-    glUniformMatrix4fv(GetLocation(name), 1, GL_FALSE, glm::value_ptr(value));
+void Shader::set_uniform(const std::string& name, const glm::mat4& value) const {
+    glUniformMatrix4fv(get_location(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-unsigned int Shader::GetHandle() const {
+unsigned int Shader::get_handle() const {
     return m_handle;
 }
 
-auto Shader::GetLocation(const std::string& name) const -> int {
+auto Shader::get_location(const std::string& name) const -> int {
     return glGetUniformLocation(m_handle, name.c_str());
 }
 
 // TODO: Find a different way to signal shader errors
-auto Shader::AttachShader(unsigned int type, const std::string& source) const -> unsigned int {
-    const unsigned int shaderID = glCreateShader(type);
+auto Shader::attach_shader(unsigned int type, const std::string& source) const -> unsigned int {
+    const unsigned int shader_id = glCreateShader(type);
 
     const char* code = source.c_str();
-    glShaderSource(shaderID, 1, &code, nullptr);
-    glCompileShader(shaderID);
+    glShaderSource(shader_id, 1, &code, nullptr);
+    glCompileShader(shader_id);
 
     int success = true;
-    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
+    glGetShaderiv(shader_id, GL_COMPILE_STATUS, &success);
 
     if (!success) {
         std::array<char, 512> log = { '\0' };
-        glGetShaderInfoLog(shaderID, log.size(), nullptr, log.data());
+        glGetShaderInfoLog(shader_id, log.size(), nullptr, log.data());
 
         std::cerr << "[Shader] " << log.data() << '\n';
         std::cerr << "-- Type: Compilation\n";
@@ -141,11 +141,11 @@ auto Shader::AttachShader(unsigned int type, const std::string& source) const ->
         assert(("Could not compile shader", false));
     }
 
-    glAttachShader(m_handle, shaderID);
-    return shaderID;
+    glAttachShader(m_handle, shader_id);
+    return shader_id;
 }
 
-void Shader::LinkProgram() const {
+void Shader::link_program() const {
     glLinkProgram(m_handle);
 
     int success = true;
@@ -162,7 +162,7 @@ void Shader::LinkProgram() const {
     }
 }
 
-auto Shader::ReadShaderFile(const std::string& path) const -> std::string {
+auto Shader::read_shader_file(const std::string& path) const -> std::string {
     std::string result;
     std::ifstream file(path, std::ios::in | std::ios::binary);
 

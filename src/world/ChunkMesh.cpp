@@ -7,32 +7,32 @@
 
 #include <algorithm>
 
-void ChunkMesh::Create() {
-    m_vbo.Create(GL_ARRAY_BUFFER);
-    m_ibo.Create(GL_ELEMENT_ARRAY_BUFFER);
+void ChunkMesh::create() {
+    m_vbo.create(GL_ARRAY_BUFFER);
+    m_ibo.create(GL_ELEMENT_ARRAY_BUFFER);
 
     VertexLayout layout;
-    layout.PushAttribute<float>(3);
-    layout.PushAttribute<float>(2);
-    layout.PushAttribute<float>(3);
+    layout.push_attribute<float>(3);
+    layout.push_attribute<float>(2);
+    layout.push_attribute<float>(3);
 
-    m_vao.Create();
-    m_vao.Attributes(m_vbo, layout);
+    m_vao.create();
+    m_vao.attributes(m_vbo, layout);
 
-    Reset();
+    reset();
 }
 
-void ChunkMesh::Destroy() {
-    m_vao.Destroy();
-    m_ibo.Destroy();
-    m_vbo.Destroy();
+void ChunkMesh::destroy() {
+    m_vao.destroy();
+    m_ibo.destroy();
+    m_vbo.destroy();
 
-    Reset();
+    reset();
 }
 
-void ChunkMesh::Mesh(const Chunk& target, bool transparent) {
-    Reset();
-    target.ForEach([this, &target, transparent](const glm::ivec3& position, Block block) {
+void ChunkMesh::mesh(const Chunk& target, bool transparent) {
+    reset();
+    target.for_each([this, &target, transparent](const glm::ivec3& position, Block block) {
         // No need to mesh air blocks
         if (block.id == BLOCK_AIR) {
             return;
@@ -49,74 +49,74 @@ void ChunkMesh::Mesh(const Chunk& target, bool transparent) {
         // Create and populate the block mesh structure
         BlockMeshParams mesh {};
         mesh.position = position;
-        mesh.chunk_position = target.GetPosition();
+        mesh.chunk_position = target.get_position();
         mesh.transparent = type.transparent;
         mesh.liquid = type.liquid;
 
         if (type.sprite) {
-            const auto [min, max] = State::renderer->atlas.GetCoordinates(type.coords(NORTH));
+            const auto [min, max] = State::renderer->atlas.get_coordinates(type.coords(NORTH));
             mesh.uv_min = min;
             mesh.uv_max = max;
 
-            mesh.AppendSprite(*this);
+            mesh.append_sprite(*this);
             return;
         }
 
         // Go through each face of the block
         for (int d = 0; d < 6; d++) {
-            // Setup the current direction
+            // Set up the current direction
             mesh.direction = static_cast<Direction>(d);
 
             // If the face is obscured by another block, skip it
-            const glm::ivec3 dir_v = DirectionToVector(mesh.direction);
-            const glm::ivec3 neighbor_pos = target.GetPosition() + position + dir_v;
+            const glm::ivec3 dir_v = direction_to_vector(mesh.direction);
+            const glm::ivec3 neighbor_pos = target.get_position() + position + dir_v;
 
-            Block neighbor = target.GetWorld()->GetBlock(neighbor_pos);
+            Block neighbor = target.get_world()->get_block(neighbor_pos);
             const BlockType& neighbor_type = Blocks::data[neighbor.id];
 
             // Skip hidden block faces
             if (neighbor_type.transparent && (!type.transparent || type.id != neighbor_type.id)) {
                 // Calculate texture coordinates
-                const auto [min, max] = State::renderer->atlas.GetCoordinates(type.coords(mesh.direction));
+                const auto [min, max] = State::renderer->atlas.get_coordinates(type.coords(mesh.direction));
                 mesh.uv_min = min;
                 mesh.uv_max = max;
 
                 // Append the mesh of the block's face to the current chunk mesh
-                mesh.AppendFace(*this);
+                mesh.append_face(*this);
             }
         }
     });
 
     // Finalize the mesh
-    SortFaces();
-    FinalizeVertices();
-    FinalizeIndices();
+    sort_faces();
+    finalize_vertices();
+    finalize_indices();
 }
 
-void ChunkMesh::Sort() {
-    SortFaces();
-    FinalizeIndices();
+void ChunkMesh::sort() {
+    sort_faces();
+    finalize_indices();
 }
 
-void ChunkMesh::Render() const {
+void ChunkMesh::render() const {
     if (m_index_count == 0) {
         return;
     }
 
-    m_vao.Bind();
-    m_ibo.Bind();
+    m_vao.bind();
+    m_ibo.bind();
     glDrawElements(GL_TRIANGLES, static_cast<int>(m_index_count), GL_UNSIGNED_INT, nullptr);
 }
 
-auto ChunkMesh::GetVertexCount() const -> unsigned int {
+auto ChunkMesh::get_vertex_count() const -> unsigned int {
     return m_vertex_count;
 }
 
-auto ChunkMesh::GetIndexCount() const -> unsigned int {
+auto ChunkMesh::get_index_count() const -> unsigned int {
     return m_index_count;
 }
 
-void ChunkMesh::Reset() {
+void ChunkMesh::reset() {
     m_vertex_count = 0;
     m_index_count = 0;
 
@@ -124,7 +124,7 @@ void ChunkMesh::Reset() {
     m_indices.clear();
 }
 
-void ChunkMesh::SortFaces() {
+void ChunkMesh::sort_faces() {
     if (m_faces.empty()) {
         return;
     }
@@ -151,12 +151,12 @@ void ChunkMesh::SortFaces() {
     m_indices.swap(sorted_indices);
 }
 
-void ChunkMesh::FinalizeVertices() {
-    m_vbo.Buffer(m_vertices.data(), static_cast<unsigned int>(sizeof(ChunkVertex) * m_vertices.size()));
+void ChunkMesh::finalize_vertices() {
+    m_vbo.buffer(m_vertices.data(), static_cast<unsigned int>(sizeof(ChunkVertex) * m_vertices.size()));
     m_vertices.clear();
 }
 
-void ChunkMesh::FinalizeIndices() {
-    m_ibo.Buffer(m_indices.data(), static_cast<unsigned int>(sizeof(ChunkIndex) * m_indices.size()));
+void ChunkMesh::finalize_indices() {
+    m_ibo.buffer(m_indices.data(), static_cast<unsigned int>(sizeof(ChunkIndex) * m_indices.size()));
     // m_indices.clear();
 }

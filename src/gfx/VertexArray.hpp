@@ -16,15 +16,15 @@ public:
     VertexArray(VertexArray&& other) noexcept;
     VertexArray& operator=(VertexArray&& other) noexcept;
 
-    void Create();
-    void Destroy();
+    void create();
+    void destroy();
 
-    auto IsCreated() const -> bool;
+    auto is_created() const -> bool;
 
-    void Bind() const;
-    void Attributes(const VertexBuffer& buffer, const VertexLayout& layout) const;
+    void bind() const;
+    void attributes(const VertexBuffer& buffer, const VertexLayout& layout) const;
 
-    auto GetHandle() const -> unsigned int;
+    auto get_handle() const -> unsigned int;
 
 private:
     unsigned int m_handle { 0 };

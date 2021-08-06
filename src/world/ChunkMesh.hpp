@@ -27,15 +27,15 @@ struct ChunkFace {
 
 class ChunkMesh {
 public:
-    void Create();
-    void Destroy();
+    void create();
+    void destroy();
 
-    void Mesh(const Chunk& target, bool transparent);
-    void Sort();
-    void Render() const;
+    void mesh(const Chunk& target, bool transparent);
+    void sort();
+    void render() const;
 
-    auto GetVertexCount() const -> unsigned int;
-    auto GetIndexCount() const -> unsigned int;
+    auto get_vertex_count() const -> unsigned int;
+    auto get_index_count() const -> unsigned int;
 
     friend struct BlockMeshParams;
 
@@ -50,9 +50,9 @@ private:
     VertexBuffer m_vbo, m_ibo;
     VertexArray m_vao;
 
-    void Reset();
+    void reset();
 
-    void SortFaces();
-    void FinalizeVertices();
-    void FinalizeIndices();
+    void sort_faces();
+    void finalize_vertices();
+    void finalize_indices();
 };

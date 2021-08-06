@@ -3,11 +3,11 @@
 #include "VertexBuffer.hpp"
 
 VertexBuffer::VertexBuffer(unsigned int type) {
-    Create(type);
+    create(type);
 }
 
 VertexBuffer::~VertexBuffer() {
-    Destroy();
+    destroy();
 }
 
 VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
@@ -19,7 +19,7 @@ VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
 
 VertexBuffer& VertexBuffer::operator=(VertexBuffer&& other) noexcept {
     if (this != &other) {
-        Destroy();
+        destroy();
 
         m_handle = other.m_handle;
         m_type = other.m_type;
@@ -31,33 +31,33 @@ VertexBuffer& VertexBuffer::operator=(VertexBuffer&& other) noexcept {
     return *this;
 }
 
-void VertexBuffer::Create(unsigned int type) {
+void VertexBuffer::create(unsigned int type) {
     m_type = type;
     glGenBuffers(1, &m_handle);
 }
 
-void VertexBuffer::Destroy() {
+void VertexBuffer::destroy() {
     glDeleteBuffers(1, &m_handle);
     m_handle = 0;
 }
 
-auto VertexBuffer::IsCreated() const -> bool {
+auto VertexBuffer::is_created() const -> bool {
     return m_handle != 0;
 }
 
-void VertexBuffer::Buffer(const void* buffer, unsigned int size, unsigned int usage) const {
-    Bind();
+void VertexBuffer::buffer(const void* buffer, unsigned int size, unsigned int usage) const {
+    bind();
     glBufferData(m_type, size, buffer, usage);
 }
 
-void VertexBuffer::Bind() const {
+void VertexBuffer::bind() const {
     glBindBuffer(m_type, m_handle);
 }
 
-auto VertexBuffer::GetHandle() const -> unsigned int {
+auto VertexBuffer::get_handle() const -> unsigned int {
     return m_handle;
 }
 
-auto VertexBuffer::GetType() const -> unsigned int {
+auto VertexBuffer::get_type() const -> unsigned int {
     return m_type;
 }

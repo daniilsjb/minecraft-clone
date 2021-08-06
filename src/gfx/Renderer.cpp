@@ -3,14 +3,14 @@
 
 #include <glad/glad.h>
 
-void Renderer::Init() {
-    camera.Init(State::window->GetWidth(), State::window->GetHeight());
+void Renderer::init() {
+    camera.init(State::window->get_width(), State::window->get_height());
 
-    atlas.LoadFromPath("res/textures/block-atlas.png");
+    atlas.load_from_path("res/textures/block-atlas.png");
 
-    shaders[SHADER_QUAD].LoadFromPath("res/shaders/quad.vs", "res/shaders/quad.fs");
-    shaders[SHADER_PLANE].LoadFromPath("res/shaders/plane.vs", "res/shaders/plane.fs");
-    shaders[SHADER_CHUNK].LoadFromPath("res/shaders/chunk.vs", "res/shaders/chunk.fs");
+    shaders[SHADER_QUAD].load_from_path("res/shaders/quad.vs", "res/shaders/quad.fs");
+    shaders[SHADER_PLANE].load_from_path("res/shaders/plane.vs", "res/shaders/plane.fs");
+    shaders[SHADER_CHUNK].load_from_path("res/shaders/chunk.vs", "res/shaders/chunk.fs");
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -21,30 +21,30 @@ void Renderer::Init() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    m_vbo.Create(GL_ARRAY_BUFFER);
-    m_ibo.Create(GL_ELEMENT_ARRAY_BUFFER);
-    m_vao.Create();
+    m_vbo.create(GL_ARRAY_BUFFER);
+    m_ibo.create(GL_ELEMENT_ARRAY_BUFFER);
+    m_vao.create();
 }
 
-void Renderer::Update(float dt) {
-    camera.Update(dt);
+void Renderer::update(float dt) {
+    camera.update(dt);
 
-    if (State::window->keyboard.IsPressed(GLFW_KEY_T)) {
+    if (State::window->keyboard.is_pressed(GLFW_KEY_T)) {
         flags.wireframe = !flags.wireframe;
     }
 }
 
-void Renderer::Begin() const {
+void Renderer::begin() const {
     glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glPolygonMode(GL_FRONT_AND_BACK, flags.wireframe ? GL_LINE : GL_FILL);
 }
 
-void Renderer::End() const {
+void Renderer::end() const {
 }
 
-void Renderer::RenderQuad() const {
+void Renderer::render_quad() const {
         float vertices[] = {
         -0.5f, -0.5f,
          0.5f, -0.5f, 
@@ -57,26 +57,26 @@ void Renderer::RenderQuad() const {
         2, 3, 0,
     };
 
-    m_vbo.Buffer(static_cast<const void*>(vertices), sizeof(vertices));
-    m_ibo.Buffer(static_cast<const void*>(indices), sizeof(indices));
+    m_vbo.buffer(static_cast<const void*>(vertices), sizeof(vertices));
+    m_ibo.buffer(static_cast<const void*>(indices), sizeof(indices));
 
     VertexLayout layout;
-    layout.PushAttribute<float>(2);
-    m_vao.Attributes(m_vbo, layout);
+    layout.push_attribute<float>(2);
+    m_vao.attributes(m_vbo, layout);
 
-    shaders[SHADER_QUAD].Bind();
-    shaders[SHADER_QUAD].SetUniform("u_color", glm::vec3(0.560f, 0.701f, 0.737f));
+    shaders[SHADER_QUAD].bind();
+    shaders[SHADER_QUAD].set_uniform("u_color", glm::vec3(0.560f, 0.701f, 0.737f));
 
-    m_vao.Bind();
-    m_ibo.Bind();
+    m_vao.bind();
+    m_ibo.bind();
 
     glDisable(GL_CULL_FACE);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     glEnable(GL_CULL_FACE);
 }
 
-void Renderer::RenderPlane() const {
-    auto [min, max] = atlas.GetCoordinates({ 1, 0 });
+void Renderer::render_plane() const {
+    auto [min, max] = atlas.get_coordinates({ 1, 0 });
 
     float vertices[] = {
         -0.5f, -0.5f,   min.x, min.y,
@@ -91,23 +91,23 @@ void Renderer::RenderPlane() const {
     };
 
     VertexLayout layout;
-    layout.PushAttribute<float>(2);
-    layout.PushAttribute<float>(2);
+    layout.push_attribute<float>(2);
+    layout.push_attribute<float>(2);
 
-    m_vbo.Buffer(static_cast<const void*>(vertices), sizeof(vertices));
-    m_ibo.Buffer(static_cast<const void*>(indices), sizeof(indices));
-    m_vao.Attributes(m_vbo, layout);
+    m_vbo.buffer(static_cast<const void*>(vertices), sizeof(vertices));
+    m_ibo.buffer(static_cast<const void*>(indices), sizeof(indices));
+    m_vao.attributes(m_vbo, layout);
 
-    shaders[SHADER_PLANE].Bind();
-    shaders[SHADER_PLANE].SetUniform("u_atlas", 0);
-    shaders[SHADER_PLANE].SetUniform("u_proj", camera.projection);
-    shaders[SHADER_PLANE].SetUniform("u_view", camera.view);
-    shaders[SHADER_PLANE].SetUniform("u_model", glm::mat4(1.0f));
+    shaders[SHADER_PLANE].bind();
+    shaders[SHADER_PLANE].set_uniform("u_atlas", 0);
+    shaders[SHADER_PLANE].set_uniform("u_proj", camera.projection);
+    shaders[SHADER_PLANE].set_uniform("u_view", camera.view);
+    shaders[SHADER_PLANE].set_uniform("u_model", glm::mat4(1.0f));
 
-    atlas.Bind();
+    atlas.bind();
 
-    m_vao.Bind();
-    m_ibo.Bind();
+    m_vao.bind();
+    m_ibo.bind();
 
     glDisable(GL_CULL_FACE);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);

@@ -15,16 +15,16 @@ public:
     VertexBuffer(VertexBuffer&& other) noexcept;
     VertexBuffer& operator=(VertexBuffer&& other) noexcept;
 
-    void Create(unsigned int type);
-    void Destroy();
+    void create(unsigned int type);
+    void destroy();
 
-    auto IsCreated() const -> bool;
+    auto is_created() const -> bool;
 
-    void Bind() const;
-    void Buffer(const void* buffer, unsigned int size, unsigned int usage = GL_STATIC_DRAW) const;
+    void bind() const;
+    void buffer(const void* buffer, unsigned int size, unsigned int usage = GL_STATIC_DRAW) const;
 
-    auto GetHandle() const -> unsigned int;
-    auto GetType() const -> unsigned int;
+    auto get_handle() const -> unsigned int;
+    auto get_type() const -> unsigned int;
 
 private:
     unsigned int m_handle { 0 };

@@ -1,12 +1,12 @@
 #include "VertexArray.hpp"
 
 VertexArray::VertexArray(const VertexBuffer& buffer, const VertexLayout& layout) {
-    Create();
-    Attributes(buffer, layout);
+    create();
+    attributes(buffer, layout);
 }
 
 VertexArray::~VertexArray() {
-    Destroy();
+    destroy();
 }
 
 VertexArray::VertexArray(VertexArray&& other) noexcept
@@ -16,7 +16,7 @@ VertexArray::VertexArray(VertexArray&& other) noexcept
 
 VertexArray& VertexArray::operator=(VertexArray&& other) noexcept {
     if (this != &other) {
-        Destroy();
+        destroy();
 
         m_handle = other.m_handle;
         other.m_handle = 0;
@@ -25,28 +25,28 @@ VertexArray& VertexArray::operator=(VertexArray&& other) noexcept {
     return *this;
 }
 
-void VertexArray::Create() {
+void VertexArray::create() {
     glGenVertexArrays(1, &m_handle);
 }
 
-void VertexArray::Destroy() {
+void VertexArray::destroy() {
     glDeleteVertexArrays(1, &m_handle);
     m_handle = 0;
 }
 
-auto VertexArray::IsCreated() const -> bool {
+auto VertexArray::is_created() const -> bool {
     return m_handle != 0;
 }
 
-void VertexArray::Bind() const {
+void VertexArray::bind() const {
     glBindVertexArray(m_handle);
 }
 
-void VertexArray::Attributes(const VertexBuffer& buffer, const VertexLayout& layout) const {
-    Bind();
-    buffer.Bind();
+void VertexArray::attributes(const VertexBuffer& buffer, const VertexLayout& layout) const {
+    bind();
+    buffer.bind();
 
-    const auto& elements = layout.GetElements();
+    const auto& elements = layout.get_elements();
     for (unsigned int i = 0; i < elements.size(); i++) {
         const auto& element = elements[i];
         glEnableVertexAttribArray(i);
@@ -55,12 +55,12 @@ void VertexArray::Attributes(const VertexBuffer& buffer, const VertexLayout& lay
             static_cast<int>(element.count),
             element.type,
             element.normalized,
-            static_cast<int>(layout.GetStride()),
+            static_cast<int>(layout.get_stride()),
             reinterpret_cast<const void*>(element.offset)
         );
     }
 }
 
-auto VertexArray::GetHandle() const -> unsigned int {
+auto VertexArray::get_handle() const -> unsigned int {
     return m_handle;
 }

@@ -5,7 +5,7 @@ VertexElement::VertexElement(unsigned int t_type, unsigned int t_count, unsigned
     type(t_type), count(t_count), normalized(t_normalized), offset(t_offset) {
 }
 
-unsigned int VertexElement::SizeOf(unsigned int type) {
+unsigned int VertexElement::size_of(unsigned int type) {
     switch (type) {
         case GL_BYTE: return sizeof(char);
         case GL_UNSIGNED_BYTE: return sizeof(unsigned char);
@@ -19,7 +19,7 @@ unsigned int VertexElement::SizeOf(unsigned int type) {
     }
 }
 
-void VertexLayout::PushTypedAttribute(unsigned int type, unsigned int count, unsigned char normalized) {
+void VertexLayout::push_typed_attribute(unsigned int type, unsigned int count, unsigned char normalized) {
     m_elements.emplace_back(type, count, normalized, m_stride);
-    m_stride += count * VertexElement::SizeOf(type);
+    m_stride += count * VertexElement::size_of(type);
 }
