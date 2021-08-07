@@ -8,7 +8,7 @@
 
 void World::create() {
     m_player.init();
-    m_seed = static_cast<uint64_t>(time(nullptr));
+    m_seed = static_cast<u64>(time(nullptr));
 
     m_chunks.resize(WORLD_AREA);
     set_center(State::renderer->camera.position);
@@ -25,7 +25,7 @@ auto World::is_created() const -> bool {
     return !m_chunks.empty();
 }
 
-void World::update(float dt) {
+void World::update(f32 dt) {
     m_player.update(dt);
 
     for (auto& chunk : m_chunks) {
@@ -54,14 +54,14 @@ void World::render() const {
     // Draw chunks in the sorted order, from farthest to the nearest
     struct ChunkSort {
         glm::ivec3 offset;
-        float distance;
+        f32 distance;
     };
 
     // Calculate offset and distance to each visible chunk
     std::array<ChunkSort, WORLD_AREA> sorted;
     for (size_t i = 0; i < sorted.size(); i++) {
         glm::ivec3 offset = m_chunks[i].get_offset();
-        float distance = glm::distance(
+        f32 distance = glm::distance(
             static_cast<glm::vec3>(offset),
             static_cast<glm::vec3>(m_offset)
         );
@@ -111,7 +111,7 @@ void World::set_center(const glm::ivec3& position) {
 }
 
 auto World::chunk_in_bounds(const glm::ivec3& offset) const -> bool {
-    const glm::ivec3 p = offset - m_center;
+    const auto p = offset - m_center;
     return (p.x >= 0 && p.x < WORLD_SIZE<>.x) &&
            (p.z >= 0 && p.z < WORLD_SIZE<>.z);
 }
@@ -133,7 +133,7 @@ auto World::contains(const glm::ivec3& position) const -> bool {
 }
 
 auto World::chunk_index(const glm::ivec3& offset) const -> size_t {
-    const glm::ivec3 p = offset - m_center;
+    const auto p = offset - m_center;
     return static_cast<size_t>(p.z) * static_cast<size_t>(CHUNK_SIZE<>.x) + static_cast<size_t>(p.x);
 }
 
@@ -144,7 +144,7 @@ auto World::chunk_offset(const size_t index) const -> glm::ivec3 {
 }
 
 auto World::get_block(const glm::ivec3& position) const -> Block {
-    const glm::ivec3 offset = block_to_offset(position);
+    const auto offset = block_to_offset(position);
     if (position.y >= 0 && position.y < CHUNK_SIZE<>.y && contains_chunk(offset)) {
         return get_chunk(offset).get_block(block_to_chunk(position));
     }
@@ -152,7 +152,7 @@ auto World::get_block(const glm::ivec3& position) const -> Block {
 }
 
 void World::set_block(const glm::ivec3& position, Block block) {
-    const glm::ivec3 offset = block_to_offset(position);
+    const auto offset = block_to_offset(position);
     if (contains_chunk(offset)) {
         m_chunks[chunk_index(offset)].set_block(block_to_chunk(position), block);
     } else {
@@ -168,7 +168,7 @@ auto World::get_chunk(const glm::ivec3& offset) -> Chunk& {
     return m_chunks[chunk_index(offset)];
 }
 
-auto World::get_seed() const -> uint64_t {
+auto World::get_seed() const -> u64 {
     return m_seed;
 }
 

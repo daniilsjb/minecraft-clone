@@ -7,11 +7,12 @@
 
 #include "Block.hpp"
 #include "ChunkMesh.hpp"
+#include "../common/Types.hpp"
 
 template<typename T = glm::ivec3>
 constexpr T CHUNK_SIZE = T(16, 256, 16);
 
-constexpr int CHUNK_VOLUME =
+constexpr i32 CHUNK_VOLUME =
     CHUNK_SIZE<>.x *
     CHUNK_SIZE<>.y *
     CHUNK_SIZE<>.z;
@@ -25,6 +26,7 @@ public:
     void create(World* world, const glm::ivec3& location);
     void destroy();
 
+    [[nodiscard]]
     auto is_created() const -> bool;
 
     void for_each(const BlockFunction& function) const;
@@ -33,11 +35,17 @@ public:
     void prepare_render();
     void render(bool transparent) const;
 
+    [[nodiscard]]
     auto get_block(const glm::ivec3& position) const -> Block;
     void set_block(const glm::ivec3& position, Block block);
 
+    [[nodiscard]]
     auto get_world() const -> World*;
+
+    [[nodiscard]]
     auto get_offset() const -> glm::ivec3;
+
+    [[nodiscard]]
     auto get_position() const -> glm::ivec3;
 
     void set_dirty();

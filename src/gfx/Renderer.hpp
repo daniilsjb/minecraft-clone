@@ -5,6 +5,7 @@
 #include <array>
 
 #include "../State.hpp"
+#include "../common/Types.hpp"
 #include "Camera.hpp"
 #include "Shader.hpp"
 #include "Texture.hpp"
@@ -39,12 +40,15 @@ public:
     } flags {};
 
     void init();
-    void update(float dt);
+    void update();
 
     void begin() const;
     void end() const;
 
+    [[maybe_unused]]
     void render_quad() const;
+
+    [[maybe_unused]]
     void render_plane() const;
 
 private:

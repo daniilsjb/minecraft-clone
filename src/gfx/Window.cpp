@@ -9,7 +9,7 @@
 #include "../world/World.hpp"
 #include "Renderer.hpp"
 
-static void APIENTRY on_opengl_log_callback(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length, const char* message, const void* user_param) {
+static void APIENTRY on_opengl_log_callback(GLenum source, GLenum type, u32 id, GLenum severity, GLsizei length, const char* message, const void* user_param) {
     std::cerr << "[OpenGL] " << message << '\n';
 
     std::cerr << "-- Source: ";
@@ -85,7 +85,7 @@ static void on_mouse_callback(GLFWwindow* handle, int button, int action, int mo
     reinterpret_cast<Window*>(glfwGetWindowUserPointer(handle))->on_mouse(handle, button, action, mods);
 }
 
-void Keyboard::update(float dt) {
+void Keyboard::update() {
     for (auto& key : keys) {
         key.pressed = key.down && !key.last;
         key.released = !key.down && key.last;
@@ -93,19 +93,19 @@ void Keyboard::update(float dt) {
     }
 }
 
-bool Keyboard::is_down(unsigned int id) const {
+bool Keyboard::is_down(u32 id) const {
     return keys[id].down;
 }
 
-bool Keyboard::is_pressed(unsigned int id) const {
+bool Keyboard::is_pressed(u32 id) const {
     return keys[id].pressed;
 }
 
-bool Keyboard::is_released(unsigned int id) const {
+bool Keyboard::is_released(u32 id) const {
     return keys[id].released;
 }
 
-void Mouse::update(float dt) {
+void Mouse::update() {
     for (auto& button : buttons) {
         button.pressed = button.down && !button.last;
         button.released = !button.down && button.last;
@@ -113,19 +113,19 @@ void Mouse::update(float dt) {
     }
 }
 
-bool Mouse::is_down(unsigned int id) const {
+bool Mouse::is_down(u32 id) const {
     return buttons[id].down;
 }
 
-bool Mouse::is_pressed(unsigned int id) const {
+bool Mouse::is_pressed(u32 id) const {
     return buttons[id].pressed;
 }
 
-bool Mouse::is_released(unsigned int id) const {
+bool Mouse::is_released(u32 id) const {
     return buttons[id].released;
 }
 
-Window::Window(const std::string& name, int width, int height) {
+Window::Window(const std::string& name, u32 width, u32 height) {
     create(name, width, height);
 }
 
@@ -134,7 +134,7 @@ Window::~Window() {
 }
 
 // TODO: Find a different way to signal window errors
-void Window::create(const std::string& name, int width, int height) {
+void Window::create(const std::string& name, u32 width, u32 height) {
     m_width = width;
     m_height = height;
 
@@ -147,7 +147,7 @@ void Window::create(const std::string& name, int width, int height) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
-    m_handle = glfwCreateWindow(m_width, m_height, name.c_str(), nullptr, nullptr);
+    m_handle = glfwCreateWindow(i32(m_width), i32(m_height), name.c_str(), nullptr, nullptr);
     if (m_handle == nullptr) {
         assert(("Could not create a window", false));
     }
@@ -180,17 +180,17 @@ void Window::destroy() {
 }
 
 void Window::start() {
-    auto t1 = static_cast<float>(glfwGetTime());
-    auto t2 = static_cast<float>(glfwGetTime());
+    auto t1 = static_cast<f32>(glfwGetTime());
+    auto t2 = static_cast<f32>(glfwGetTime());
     auto dt = 0.0f;
 
     while (!glfwWindowShouldClose(m_handle)) {
-        t2 = static_cast<float>(glfwGetTime());
+        t2 = static_cast<f32>(glfwGetTime());
         dt = t2 - t1;
         t1 = t2;
 
-        State::window->update(dt);
-        State::renderer->update(dt);
+        State::window->update();
+        State::renderer->update();
         State::world->update(dt);
 
         State::world->prepare_render();
@@ -206,24 +206,24 @@ void Window::start() {
     }
 }
 
-void Window::update(float dt) {
-    keyboard.update(dt);
-    mouse.update(dt);
+void Window::update() {
+    keyboard.update();
+    mouse.update();
 
     if (keyboard.is_pressed(GLFW_KEY_ESCAPE)) {
         glfwSetWindowShouldClose(m_handle, true);
     }
 }
 
-void Window::on_resize(GLFWwindow* handle, int width, int height) {
+void Window::on_resize(GLFWwindow* handle, u32 width, u32 height) {
     m_width = width;
     m_height = height;
 
-    glViewport(0, 0, m_width, m_height);
+    glViewport(0, 0, i32(m_width), i32(m_height));
     State::renderer->camera.resize(width, height);
 }
 
-void Window::on_key(GLFWwindow* handle, int key, int scancode, int action, int mods) {
+void Window::on_key(GLFWwindow* handle, i32 key, i32 scancode, i32 action, i32 mods) {
     if (key < 0) {
         return;
     }
@@ -235,7 +235,7 @@ void Window::on_key(GLFWwindow* handle, int key, int scancode, int action, int m
     }
 }
 
-void Window::on_cursor(GLFWwindow* handle, double x, double y) {
+void Window::on_cursor(GLFWwindow* handle, f64 x, f64 y) {
     glm::dvec2 new_pos = { x, y };
 
     // Accumulate the delta between callback invocations
@@ -243,7 +243,7 @@ void Window::on_cursor(GLFWwindow* handle, double x, double y) {
     mouse.pos = new_pos;
 }
 
-void Window::on_mouse(GLFWwindow* handle, int button, int action, int mods) {
+void Window::on_mouse(GLFWwindow* handle, i32 button, i32 action, i32 mods) {
     if (button < 0) {
         return;
     }
@@ -259,10 +259,10 @@ auto Window::get_handle() const -> GLFWwindow* {
     return m_handle;
 }
 
-auto Window::get_width() const -> int {
+auto Window::get_width() const -> u32 {
     return m_width;
 }
 
-auto Window::get_height() const -> int {
+auto Window::get_height() const -> u32 {
     return m_height;
 }

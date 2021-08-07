@@ -2,11 +2,11 @@
 
 #include <algorithm>
 
-void Camera::init(int width, int height) {
+void Camera::init(i32 width, i32 height) {
     resize(width, height);
 }
 
-void Camera::update(float dt) {
+void Camera::update() {
     yaw = (yaw < 0.0f ? 360.0f : 0.0f) + glm::mod(yaw, 360.0f);
     pitch = std::clamp(pitch, -89.0f, 89.0f);
 
@@ -24,6 +24,6 @@ void Camera::update(float dt) {
     view       = glm::lookAt(position, position + direction, up);
 }
 
-void Camera::resize(int width, int height) {
-    aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
+void Camera::resize(u32 width, u32 height) {
+    aspect_ratio = static_cast<f32>(width) / static_cast<f32>(height);
 }

@@ -4,11 +4,11 @@
 
 #include <vector>
 #include <functional>
-#include <cstdint>
 #include <cmath>
 
 #include "Chunk.hpp"
 #include "Player.hpp"
+#include "../common/Types.hpp"
 
 template<typename T = glm::ivec3>
 constexpr T WORLD_SIZE = T(16, 0, 16);
@@ -28,30 +28,45 @@ public:
     void create();
     void destroy();
 
+    [[nodiscard]]
     auto is_created() const -> bool;
 
-    void update(float dt);
+    void update(f32 dt);
     void prepare_render();
     void render() const;
 
     void set_center(const glm::ivec3& position);
 
+    [[nodiscard]]
     auto chunk_in_bounds(const glm::ivec3& offset) const -> bool;
+
+    [[nodiscard]]
     auto block_in_bounds(const glm::ivec3& position) const -> bool;
 
+    [[nodiscard]]
     auto contains_chunk(const glm::ivec3& offset) const -> bool;
+
+    [[nodiscard]]
     auto contains(const glm::ivec3& position) const -> bool;
 
+    [[nodiscard]]
     auto chunk_index(const glm::ivec3& offset) const -> size_t;
-    auto chunk_offset(const size_t index) const -> glm::ivec3;
 
+    [[nodiscard]]
+    auto chunk_offset(size_t index) const -> glm::ivec3;
+
+    [[nodiscard]]
     auto get_block(const glm::ivec3& position) const -> Block;
     void set_block(const glm::ivec3& position, Block block);
 
+    [[nodiscard]]
     auto get_chunk(const glm::ivec3& offset) const -> const Chunk&;
     auto get_chunk(const glm::ivec3& offset) -> Chunk&;
 
-    auto get_seed() const -> uint64_t;
+    [[nodiscard]]
+    auto get_seed() const -> u64;
+
+    [[nodiscard]]
     auto get_player() -> Player*;
 
 private:
@@ -68,7 +83,7 @@ private:
 
     Player m_player;
 
-    uint64_t m_seed;
+    u64 m_seed;
 
     void create_missing_chunks();
 };
@@ -81,9 +96,9 @@ inline auto position_to_block(const glm::vec3& position) -> glm::ivec3 {
 // world position -> chunk offset
 inline auto block_to_offset(const glm::ivec3& position) -> glm::ivec3 {
     return glm::ivec3 {
-        static_cast<int>(floorf(static_cast<float>(position.x) / CHUNK_SIZE<glm::vec3>.x)),
+        static_cast<i32>(floorf(static_cast<f32>(position.x) / CHUNK_SIZE<glm::vec3>.x)),
         0,
-        static_cast<int>(floorf(static_cast<float>(position.z) / CHUNK_SIZE<glm::vec3>.z)),
+        static_cast<i32>(floorf(static_cast<f32>(position.z) / CHUNK_SIZE<glm::vec3>.z)),
     };
 }
 

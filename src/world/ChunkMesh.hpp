@@ -6,6 +6,7 @@
 
 #include "../gfx/VertexArray.hpp"
 #include "../gfx/VertexBuffer.hpp"
+#include "../common/Types.hpp"
 
 class Chunk;
 
@@ -16,13 +17,13 @@ struct ChunkVertex {
 };
 
 struct ChunkIndex {
-    unsigned int index;
+    u32 index;
 };
 
 struct ChunkFace {
     glm::vec3 position;
     size_t index_start;
-    float distance;
+    f32 distance;
 };
 
 class ChunkMesh {
@@ -34,8 +35,11 @@ public:
     void sort();
     void render() const;
 
-    auto get_vertex_count() const -> unsigned int;
-    auto get_index_count() const -> unsigned int;
+    [[nodiscard]]
+    auto get_vertex_count() const -> u32;
+
+    [[nodiscard]]
+    auto get_index_count() const -> u32;
 
     friend struct BlockMeshParams;
 
@@ -44,8 +48,8 @@ private:
     std::vector<ChunkIndex> m_indices;
     std::vector<ChunkFace> m_faces;
 
-    unsigned int m_vertex_count { 0 };
-    unsigned int m_index_count { 0 };
+    u32 m_vertex_count { 0 };
+    u32 m_index_count { 0 };
 
     VertexBuffer m_vbo, m_ibo;
     VertexArray m_vao;

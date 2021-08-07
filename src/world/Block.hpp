@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "../common/Direction.hpp"
+#include "../common/Types.hpp"
 
 // Unique identifier for each block type
 enum BlockId {
@@ -106,5 +107,5 @@ struct Blocks {
 
 // Block instances as stored in chunks
 struct Block {
-    unsigned int id;
+    u32 id;
 };

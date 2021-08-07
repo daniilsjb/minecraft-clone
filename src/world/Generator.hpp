@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Chunk.hpp"
-
-#include <cstdint>
+#include "../common/Types.hpp"
 
 enum class Biome {
     OCEAN,
@@ -13,7 +12,7 @@ enum class Biome {
 // Generic noise structure that, given a 2D position and a seed, produces a smooth noise value
 struct Noise {
     virtual ~Noise() = default;
-    virtual auto compute(float x, float z, float seed) -> float = 0;
+    virtual auto compute(f32 x, f32 z, f32 seed) -> f32 = 0;
 };
 
 // Octave noise which sums up a sequence of values produced by the noise function
@@ -21,17 +20,16 @@ struct Noise {
 struct Octave : public Noise {
     // The number of octaves in the sequence; the amplitude is doubled with each octave,
     // such that the resulting amplitude is equal to 2^(number + 1) - 1
-    int number;
+    i32 number;
 
     // The seed offset for additional control over the output
-    int offset;
+    i32 offset;
 
-    Octave(int t_number, int t_offset)
+    Octave(i32 t_number, i32 t_offset)
         : number(t_number)
-        , offset(t_offset) {
-    }
+        , offset(t_offset) {}
 
-    auto compute(float x, float z, float seed) -> float override;
+    auto compute(f32 x, f32 z, f32 seed) -> f32 override;
 };
 
 // Combined noise which merges outputs of other noises.
@@ -42,10 +40,9 @@ struct Combined : public Noise {
 
     Combined(Noise* t_a, Noise* t_b)
         : a(t_a)
-        , b(t_b) {
-    }
+        , b(t_b) {}
 
-    auto compute(float x, float z, float seed) -> float override;
+    auto compute(f32 x, f32 z, f32 seed) -> f32 override;
 };
 
-void generate(Chunk& chunk, const uint64_t seed);
+void generate(Chunk& chunk, u64 seed);

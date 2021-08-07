@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Block.hpp"
+#include "../common/Types.hpp"
 
 class Player {
 public:
-    float movement_speed { 5.0f };
-    float mouse_sensitivity { 0.2f };
+    f32 movement_speed { 5.0f };
+    f32 mouse_sensitivity { 0.2f };
 
     Block selected_block { 1 };
 
@@ -16,6 +17,6 @@ public:
     glm::ivec3 offset;
 
     void init();
-    void update(float dt);
+    void update(f32 dt);
     void destroy();
 };

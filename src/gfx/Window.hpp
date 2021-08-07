@@ -7,6 +7,7 @@
 #include <string>
 
 #include "../State.hpp"
+#include "../common/Types.hpp"
 
 struct KeyState {
     bool down;     // The key is currently held down
@@ -18,11 +19,16 @@ struct KeyState {
 struct Keyboard {
     std::array<KeyState, GLFW_KEY_LAST + 1> keys {};
 
-    void update(float dt);
+    void update();
 
-    auto is_down(unsigned int id) const -> bool;
-    auto is_pressed(unsigned int id) const -> bool;
-    auto is_released(unsigned int id) const -> bool;
+    [[nodiscard]]
+    auto is_down(u32 id) const -> bool;
+
+    [[nodiscard]]
+    auto is_pressed(u32 id) const -> bool;
+
+    [[nodiscard]]
+    auto is_released(u32 id) const -> bool;
 };
 
 struct Mouse {
@@ -31,11 +37,16 @@ struct Mouse {
     glm::dvec2 pos { 0.0, 0.0 };
     glm::dvec2 delta { 0.0, 0.0 };
 
-    void update(float dt);
+    void update();
 
-    auto is_down(unsigned int id) const -> bool;
-    auto is_pressed(unsigned int id) const -> bool;
-    auto is_released(unsigned int id) const -> bool;
+    [[nodiscard]]
+    auto is_down(u32 id) const -> bool;
+
+    [[nodiscard]]
+    auto is_pressed(u32 id) const -> bool;
+
+    [[nodiscard]]
+    auto is_released(u32 id) const -> bool;
 };
 
 class Window {
@@ -44,7 +55,7 @@ public:
     Mouse mouse;
 
     Window() = default;
-    Window(const std::string& name, int width, int height);
+    Window(const std::string& name, u32 width, u32 height);
 
     Window(const Window&) = delete;
     Window& operator=(const Window&) = delete;
@@ -54,22 +65,27 @@ public:
 
     ~Window();
 
-    void create(const std::string& name, int width, int height);
+    void create(const std::string& name, u32 width, u32 height);
     void destroy();
 
     void start();
-    void update(float dt);
+    void update();
 
-    void on_resize(GLFWwindow* handle, int width, int height);
-    void on_key(GLFWwindow* handle, int key, int scancode, int action, int mods);
-    void on_cursor(GLFWwindow* handle, double x, double y);
-    void on_mouse(GLFWwindow* handle, int button, int action, int mods);
+    void on_resize(GLFWwindow* handle, u32 width, u32 height);
+    void on_key(GLFWwindow* handle, i32 key, i32 scancode, i32 action, i32 mods);
+    void on_cursor(GLFWwindow* handle, f64 x, f64 y);
+    void on_mouse(GLFWwindow* handle, i32 button, i32 action, i32 mods);
 
+    [[nodiscard]]
     auto get_handle() const -> GLFWwindow*;
-    auto get_width() const -> int;
-    auto get_height() const -> int;
+
+    [[nodiscard]]
+    auto get_width() const -> u32;
+
+    [[nodiscard]]
+    auto get_height() const -> u32;
 
 private:
     GLFWwindow* m_handle { nullptr };
-    int m_width { 0 }, m_height { 0 };
+    u32 m_width { 0 }, m_height { 0 };
 };

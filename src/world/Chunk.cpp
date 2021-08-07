@@ -59,7 +59,7 @@ void Chunk::prepare_render() {
 }
 
 void Chunk::render(bool transparent) const {
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), static_cast<glm::vec3>(m_position));
+    auto model = glm::translate(glm::mat4(1.0f), static_cast<glm::vec3>(m_position));
     State::renderer->shaders[SHADER_CHUNK].set_uniform("u_model", model);
 
     if (transparent) {

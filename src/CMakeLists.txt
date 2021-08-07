@@ -1,7 +1,11 @@
 ﻿# Add sources to the game's executable
 add_executable(game
-    "main.cpp"
-    "State.hpp"
+    "common/db_perlin.cpp"
+    "common/Direction.hpp"
+    "common/Ray.cpp"
+    "common/Ray.hpp"
+    "common/stb_image.cpp"
+    "common/Types.hpp"
 
     "gfx/Camera.cpp"
     "gfx/Camera.hpp"
@@ -34,11 +38,8 @@ add_executable(game
     "world/World.cpp"
     "world/World.hpp"
 
-    "common/Direction.hpp"
-    "common/Ray.cpp"
-    "common/Ray.hpp"
-    "common/db_perlin.cpp"
-    "common/stb_image.cpp"
+    "main.cpp"
+    "State.hpp"
 )
 
 # Specify language standard

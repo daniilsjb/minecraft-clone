@@ -1,6 +1,6 @@
 #include "Ray.hpp"
 
-auto Ray::cast(float max_distance, const RayIntersect& intersect) const -> std::optional<RayHit> {
+auto Ray::cast(f32 max_distance, const RayIntersect& intersect) const -> std::optional<RayHit> {
     glm::ivec3 position = glm::floor(origin);
     glm::ivec3 step = glm::sign(direction);
 
@@ -11,7 +11,7 @@ auto Ray::cast(float max_distance, const RayIntersect& intersect) const -> std::
     };
     glm::vec3 tdelta = static_cast<glm::vec3>(step) / direction;
 
-    float radius = max_distance / glm::length(direction);
+    f32 radius = max_distance / glm::length(direction);
 
     auto face = static_cast<Direction>(0);
     while (true) {

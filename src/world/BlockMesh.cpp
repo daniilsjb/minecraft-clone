@@ -3,7 +3,7 @@
 
 #include <array>
 
-constexpr std::array<float, 8 * 3> CUBE_COORDINATES = {
+constexpr std::array<f32, 8 * 3> CUBE_COORDINATES = {
     0.0f, 0.0f, 0.0f, // 0
     1.0f, 0.0f, 0.0f, // 1
     1.0f, 1.0f, 0.0f, // 2
@@ -15,7 +15,7 @@ constexpr std::array<float, 8 * 3> CUBE_COORDINATES = {
     0.0f, 1.0f, 1.0f, // 7
 };
 
-constexpr std::array<float, 6 * 3> FACE_CENTERS = {
+constexpr std::array<f32, 6 * 3> FACE_CENTERS = {
     0.5f, 0.5f, 0.0f, // North
     0.5f, 0.5f, 1.0f, // South
     1.0f, 0.5f, 0.5f, // East
@@ -24,15 +24,15 @@ constexpr std::array<float, 6 * 3> FACE_CENTERS = {
     0.5f, 0.0f, 0.5f, // Bottom
 };
 
-constexpr std::array<unsigned int, 6> FACE_INDICES = {
+constexpr std::array<u32, 6> FACE_INDICES = {
     0, 1, 2, 2, 3, 0
 };
 
-constexpr std::array<unsigned int, 4> UNIQUE_INDICES = {
+constexpr std::array<u32, 4> UNIQUE_INDICES = {
     0, 1, 2, 4,
 };
 
-constexpr std::array<unsigned int, 6 * 6> CUBE_INDICES = {
+constexpr std::array<u32, 6 * 6> CUBE_INDICES = {
     1, 0, 3, 3, 2, 1, // North
     4, 5, 6, 6, 7, 4, // South
     5, 1, 2, 2, 6, 5, // East
@@ -41,12 +41,12 @@ constexpr std::array<unsigned int, 6 * 6> CUBE_INDICES = {
     0, 1, 5, 5, 4, 0, // Down
 };
 
-constexpr std::array<unsigned int, 2 * 6> SPRITE_INDICES = {
+constexpr std::array<u32, 2 * 6> SPRITE_INDICES = {
     5, 0, 3, 3, 6, 5,
     1, 4, 7, 7, 2, 1,
 };
 
-constexpr std::array<float, 4 * 2> CUBE_UVS = {
+constexpr std::array<f32, 4 * 2> CUBE_UVS = {
     1.0f, 0.0f,
     0.0f, 0.0f,
     0.0f, 1.0f,
@@ -66,10 +66,10 @@ void BlockMeshParams::append_face(ChunkMesh& target) {
 
     // Emit vertices
     for (size_t i = 0; i < 4; i++) {
-        const float* coords = &CUBE_COORDINATES[
+        const f32* coords = &CUBE_COORDINATES[
             CUBE_INDICES[(static_cast<size_t>(direction) * 6) + UNIQUE_INDICES[i]] * 3
         ];
-        const float* uv = &CUBE_UVS[i * 2];
+        const f32* uv = &CUBE_UVS[i * 2];
         
         glm::vec3 vertex_position = {
             position.x + coords[0],
@@ -99,7 +99,7 @@ void BlockMeshParams::append_face(ChunkMesh& target) {
     }
 
     // Emit indices
-    for (unsigned int i = 0; i < 6; i++) {
+    for (u32 i = 0; i < 6; i++) {
         target.m_indices.push_back({ target.m_vertex_count + FACE_INDICES[i] });
     }
 
@@ -115,8 +115,8 @@ void BlockMeshParams::append_sprite(ChunkMesh& target) {
     }
 
     for (size_t i = 0; i < 8; i++) {
-        const float* coords = &CUBE_COORDINATES[i * 3];
-        const float* uv = &CUBE_UVS[(i % 4) * 2];
+        const f32* coords = &CUBE_COORDINATES[i * 3];
+        const f32* uv = &CUBE_UVS[(i % 4) * 2];
 
         glm::vec3 vertex_position = {
             position.x + coords[0],

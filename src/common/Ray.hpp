@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "Direction.hpp"
+#include "Types.hpp"
 
 struct RayHit {
     // Position of the block that the ray hit
@@ -22,5 +23,6 @@ struct Ray {
     glm::vec3 origin;
     glm::vec3 direction;
 
-    auto cast(float max_distance, const RayIntersect& intersect) const -> std::optional<RayHit>;
+    [[nodiscard]]
+    auto cast(f32 max_distance, const RayIntersect& intersect) const -> std::optional<RayHit>;
 };

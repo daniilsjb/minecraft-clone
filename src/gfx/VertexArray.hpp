@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../common/Types.hpp"
 #include "VertexBuffer.hpp"
 #include "VertexLayout.hpp"
 
@@ -19,13 +20,17 @@ public:
     void create();
     void destroy();
 
-    auto is_created() const -> bool;
-
     void bind() const;
+
     void attributes(const VertexBuffer& buffer, const VertexLayout& layout) const;
 
-    auto get_handle() const -> unsigned int;
+    [[nodiscard]]
+    auto is_created() const -> bool;
+
+    [[nodiscard]]
+    auto get_handle() const -> u32;
+
 
 private:
-    unsigned int m_handle { 0 };
+    u32 m_handle { 0 };
 };

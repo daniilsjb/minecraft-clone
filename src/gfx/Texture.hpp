@@ -5,10 +5,12 @@
 #include <string>
 #include <tuple>
 
+#include "../common/Types.hpp"
+
 class Texture {
 public:
     Texture();
-    Texture(unsigned char* pixels, size_t width, size_t height);
+    Texture(u8* pixels, u32 width, u32 height);
     explicit Texture(const std::string& path);
 
     ~Texture();
@@ -19,23 +21,27 @@ public:
     Texture(Texture&& other) noexcept;
     Texture& operator=(Texture&& other) noexcept;
 
-    void create();
     void destroy();
 
-    auto is_created() const -> bool;
-
-    void bind() const;
-    void load_from_pixels(unsigned char* pixels, size_t width, size_t height);
+    void load_from_pixels(u8* pixels, u32 width, u32 height);
     void load_from_path(const std::string& path);
 
-    auto get_handle() const -> unsigned int;
-    auto get_width() const -> int;
-    auto get_height() const -> int;
-    auto get_size() const -> glm::ivec2;
+    void bind() const;
+
+    [[nodiscard]]
+    auto is_created() const -> bool;
+
+    [[nodiscard]]
+    auto get_handle() const -> u32;
+
+    [[nodiscard]]
+    auto get_size() const -> glm::uvec2;
 
 private:
-    unsigned int m_handle;
+    u32 m_handle;
     glm::ivec2 m_size;
+
+    void create();
 };
 
 using AtlasCoords = std::tuple<glm::vec2, glm::vec2>;

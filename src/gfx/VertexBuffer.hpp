@@ -2,10 +2,12 @@
 
 #include <glad/glad.h>
 
+#include "../common/Types.hpp"
+
 class VertexBuffer {
 public:
     VertexBuffer() = default;
-    explicit VertexBuffer(unsigned int type);
+    explicit VertexBuffer(u32 type);
 
     ~VertexBuffer();
 
@@ -15,18 +17,22 @@ public:
     VertexBuffer(VertexBuffer&& other) noexcept;
     VertexBuffer& operator=(VertexBuffer&& other) noexcept;
 
-    void create(unsigned int type);
+    void create(u32 type);
     void destroy();
 
+    void bind() const;
+    void buffer(const void* buffer, u32 size, u32 usage = GL_STATIC_DRAW) const;
+
+    [[nodiscard]]
     auto is_created() const -> bool;
 
-    void bind() const;
-    void buffer(const void* buffer, unsigned int size, unsigned int usage = GL_STATIC_DRAW) const;
+    [[nodiscard]]
+    auto get_handle() const -> u32;
 
-    auto get_handle() const -> unsigned int;
-    auto get_type() const -> unsigned int;
+    [[nodiscard]]
+    auto get_type() const -> u32;
 
 private:
-    unsigned int m_handle { 0 };
-    unsigned int m_type { 0 };
+    u32 m_handle { 0 };
+    u32 m_type { 0 };
 };

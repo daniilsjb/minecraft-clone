@@ -12,9 +12,9 @@ void ChunkMesh::create() {
     m_ibo.create(GL_ELEMENT_ARRAY_BUFFER);
 
     VertexLayout layout;
-    layout.push_attribute<float>(3);
-    layout.push_attribute<float>(2);
-    layout.push_attribute<float>(3);
+    layout.push_attribute<f32>(3);
+    layout.push_attribute<f32>(2);
+    layout.push_attribute<f32>(3);
 
     m_vao.create();
     m_vao.attributes(m_vbo, layout);
@@ -105,14 +105,14 @@ void ChunkMesh::render() const {
 
     m_vao.bind();
     m_ibo.bind();
-    glDrawElements(GL_TRIANGLES, static_cast<int>(m_index_count), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, static_cast<i32>(m_index_count), GL_UNSIGNED_INT, nullptr);
 }
 
-auto ChunkMesh::get_vertex_count() const -> unsigned int {
+auto ChunkMesh::get_vertex_count() const -> u32 {
     return m_vertex_count;
 }
 
-auto ChunkMesh::get_index_count() const -> unsigned int {
+auto ChunkMesh::get_index_count() const -> u32 {
     return m_index_count;
 }
 
@@ -142,8 +142,8 @@ void ChunkMesh::sort_faces() {
         ChunkFace& face = m_faces[i];
         sorted_indices.insert(
             sorted_indices.end(),
-            std::make_move_iterator(m_indices.begin() + static_cast<int64_t>(face.index_start)),
-            std::make_move_iterator(m_indices.begin() + static_cast<int64_t>(face.index_start) + 6)
+            std::make_move_iterator(m_indices.begin() + static_cast<i32>(face.index_start)),
+            std::make_move_iterator(m_indices.begin() + static_cast<i32>(face.index_start) + 6)
         );
         face.index_start = i * 6;
     }
@@ -152,11 +152,11 @@ void ChunkMesh::sort_faces() {
 }
 
 void ChunkMesh::finalize_vertices() {
-    m_vbo.buffer(m_vertices.data(), static_cast<unsigned int>(sizeof(ChunkVertex) * m_vertices.size()));
+    m_vbo.buffer(m_vertices.data(), static_cast<u32>(sizeof(ChunkVertex) * m_vertices.size()));
     m_vertices.clear();
 }
 
 void ChunkMesh::finalize_indices() {
-    m_ibo.buffer(m_indices.data(), static_cast<unsigned int>(sizeof(ChunkIndex) * m_indices.size()));
+    m_ibo.buffer(m_indices.data(), static_cast<u32>(sizeof(ChunkIndex) * m_indices.size()));
     // m_indices.clear();
 }

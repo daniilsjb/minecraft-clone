@@ -1,8 +1,6 @@
 #include "Renderer.hpp"
 #include "Window.hpp"
 
-#include <glad/glad.h>
-
 void Renderer::init() {
     camera.init(State::window->get_width(), State::window->get_height());
 
@@ -26,8 +24,8 @@ void Renderer::init() {
     m_vao.create();
 }
 
-void Renderer::update(float dt) {
-    camera.update(dt);
+void Renderer::update() {
+    camera.update();
 
     if (State::window->keyboard.is_pressed(GLFW_KEY_T)) {
         flags.wireframe = !flags.wireframe;
@@ -44,15 +42,16 @@ void Renderer::begin() const {
 void Renderer::end() const {
 }
 
+[[maybe_unused]]
 void Renderer::render_quad() const {
-        float vertices[] = {
+    f32 vertices[] = {
         -0.5f, -0.5f,
          0.5f, -0.5f, 
          0.5f,  0.5f,
         -0.5f,  0.5f,
     };
 
-    unsigned int indices[] = {
+    u32 indices[] = {
         0, 1, 2,
         2, 3, 0,
     };
@@ -61,7 +60,7 @@ void Renderer::render_quad() const {
     m_ibo.buffer(static_cast<const void*>(indices), sizeof(indices));
 
     VertexLayout layout;
-    layout.push_attribute<float>(2);
+    layout.push_attribute<f32>(2); // screen coordinates
     m_vao.attributes(m_vbo, layout);
 
     shaders[SHADER_QUAD].bind();
@@ -75,24 +74,25 @@ void Renderer::render_quad() const {
     glEnable(GL_CULL_FACE);
 }
 
+[[maybe_unused]]
 void Renderer::render_plane() const {
     auto [min, max] = atlas.get_coordinates({ 1, 0 });
 
-    float vertices[] = {
+    f32 vertices[] = {
         -0.5f, -0.5f,   min.x, min.y,
          0.5f, -0.5f,   max.x, min.y, 
          0.5f,  0.5f,   max.x, max.y,
         -0.5f,  0.5f,   min.x, max.y,
     };
 
-    unsigned int indices[] = {
+    u32 indices[] = {
         0, 1, 2,
         2, 3, 0,
     };
 
     VertexLayout layout;
-    layout.push_attribute<float>(2);
-    layout.push_attribute<float>(2);
+    layout.push_attribute<f32>(2); // screen coordinates
+    layout.push_attribute<f32>(2); // texture coordinates
 
     m_vbo.buffer(static_cast<const void*>(vertices), sizeof(vertices));
     m_ibo.buffer(static_cast<const void*>(indices), sizeof(indices));

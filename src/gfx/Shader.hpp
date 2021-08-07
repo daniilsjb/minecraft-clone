@@ -4,9 +4,11 @@
 
 #include <string>
 
+#include "../common/Types.hpp"
+
 class Shader {
 public:
-    Shader() = default;
+    Shader();
     Shader(const std::string& vert_path, const std::string& frag_path);
 
     ~Shader();
@@ -17,18 +19,22 @@ public:
     Shader(Shader&& other) noexcept;
     Shader& operator=(Shader&& other) noexcept;
 
-    void create();
     void destroy();
 
-    auto is_created() const -> bool;
-
-    void bind() const;
     void load_from_string(const std::string& vert, const std::string& frag);
     void load_from_path(const std::string& vert_path, const std::string& frag_path);
 
-    void set_uniform(const std::string& name, const float value) const;
-    void set_uniform(const std::string& name, const int value) const;
-    void set_uniform(const std::string& name, const unsigned int value) const;
+    void bind() const;
+
+    [[nodiscard]]
+    auto is_created() const -> bool;
+
+    [[nodiscard]]
+    auto get_handle() const -> u32;
+
+    void set_uniform(const std::string& name, f32 value) const;
+    void set_uniform(const std::string& name, i32 value) const;
+    void set_uniform(const std::string& name, u32 value) const;
     void set_uniform(const std::string& name, const glm::vec2& value) const;
     void set_uniform(const std::string& name, const glm::vec3& value) const;
     void set_uniform(const std::string& name, const glm::vec4& value) const;
@@ -36,14 +42,16 @@ public:
     void set_uniform(const std::string& name, const glm::mat3& value) const;
     void set_uniform(const std::string& name, const glm::mat4& value) const;
 
-    auto get_handle() const -> unsigned int;
-    auto get_location(const std::string& name) const -> int;
+    [[nodiscard]]
+    auto get_location(const std::string& name) const -> i32;
 
 private:
-    unsigned int m_handle { 0 };
+    u32 m_handle;
 
-    auto read_shader_file(const std::string& path) const -> std::string;
+    void create();
 
-    auto attach_shader(unsigned int type, const std::string& source) const -> unsigned int;
+    [[nodiscard]]
+    auto attach_shader(u32 type, const std::string& source) const -> u32;
+
     void link_program() const;
 };

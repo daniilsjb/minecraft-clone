@@ -12,7 +12,7 @@ constexpr auto RAY_INTERSECTION = [](const glm::ivec3& position) {
 void Player::init() {
 }
 
-void Player::update(float dt) {
+void Player::update(f32 dt) {
     if (State::window->keyboard.is_down(GLFW_KEY_W)) {
         State::renderer->camera.position += State::renderer->camera.direction * dt * movement_speed;
         State::world->set_center(position_to_block(State::renderer->camera.position));
@@ -56,7 +56,7 @@ void Player::update(float dt) {
         }
     }
 
-    float ray_reach = 6.0f;
+    f32 ray_reach = 6.0f;
     if (State::window->mouse.is_pressed(GLFW_MOUSE_BUTTON_1)) {
         auto ray_hit = (Ray {
             State::renderer->camera.position,
@@ -81,8 +81,8 @@ void Player::update(float dt) {
         }
     }
 
-    State::renderer->camera.yaw += static_cast<float>(State::window->mouse.delta.x) * mouse_sensitivity;
-    State::renderer->camera.pitch -= static_cast<float>(State::window->mouse.delta.y) * mouse_sensitivity;
+    State::renderer->camera.yaw += static_cast<f32>(State::window->mouse.delta.x) * mouse_sensitivity;
+    State::renderer->camera.pitch -= static_cast<f32>(State::window->mouse.delta.y) * mouse_sensitivity;
 }
 
 void Player::destroy() {
