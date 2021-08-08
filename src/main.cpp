@@ -1,7 +1,7 @@
-﻿#include "State.hpp"
-#include "gfx/Window.hpp"
-#include "gfx/Renderer.hpp"
-#include "world/World.hpp"
+﻿#include "state.hpp"
+#include "gfx/window.hpp"
+#include "gfx/renderer.hpp"
+#include "world/world.hpp"
 
 auto main() -> int {
     // The main window with OpenGL context

@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "../common/Types.hpp"
+#include "../common/types.hpp"
 
 struct Camera {
     glm::mat4 projection;

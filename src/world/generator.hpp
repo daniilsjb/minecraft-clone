@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Chunk.hpp"
-#include "../common/Types.hpp"
+#include "chunk.hpp"
+#include "../common/types.hpp"
 
 enum class Biome {
     OCEAN,

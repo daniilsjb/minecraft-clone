@@ -1,4 +1,4 @@
-#include "Ray.hpp"
+#include "ray.hpp"
 
 auto Ray::cast(f32 max_distance, const RayIntersect& intersect) const -> std::optional<RayHit> {
     glm::ivec3 position = glm::floor(origin);

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../common/Types.hpp"
-#include "VertexBuffer.hpp"
-#include "VertexLayout.hpp"
+#include "../common/types.hpp"
+#include "vertex_buffer.hpp"
+#include "vertex_layout.hpp"
 
 class VertexArray {
 public:

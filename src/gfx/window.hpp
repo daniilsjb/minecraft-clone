@@ -6,8 +6,8 @@
 #include <array>
 #include <string>
 
-#include "../State.hpp"
-#include "../common/Types.hpp"
+#include "../state.hpp"
+#include "../common/types.hpp"
 
 struct KeyState {
     bool down;     // The key is currently held down

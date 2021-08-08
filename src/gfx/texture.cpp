@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cassert>
 
-#include "Texture.hpp"
+#include "texture.hpp"
 
 Texture::Texture()
     : m_handle(0)

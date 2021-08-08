@@ -1,5 +1,5 @@
-#include "Renderer.hpp"
-#include "Window.hpp"
+#include "renderer.hpp"
+#include "window.hpp"
 
 void Renderer::init() {
     camera.init(State::window->get_width(), State::window->get_height());

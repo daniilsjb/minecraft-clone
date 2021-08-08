@@ -1,8 +1,8 @@
-#include "Chunk.hpp"
-#include "../State.hpp"
-#include "../gfx/Renderer.hpp"
-#include "World.hpp"
-#include "Generator.hpp"
+#include "chunk.hpp"
+#include "../state.hpp"
+#include "../gfx/renderer.hpp"
+#include "world.hpp"
+#include "generator.hpp"
 
 void Chunk::create(World* world, const glm::ivec3& offset) {
     m_blocks.resize(CHUNK_VOLUME);

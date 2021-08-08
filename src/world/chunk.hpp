@@ -5,9 +5,9 @@
 #include <functional>
 #include <vector>
 
-#include "Block.hpp"
-#include "ChunkMesh.hpp"
-#include "../common/Types.hpp"
+#include "block.hpp"
+#include "chunk_mesh.hpp"
+#include "../common/types.hpp"
 
 template<typename T = glm::ivec3>
 constexpr T CHUNK_SIZE = T(16, 256, 16);

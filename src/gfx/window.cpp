@@ -1,4 +1,4 @@
-#include "Window.hpp"
+#include "window.hpp"
 
 #include <glad/glad.h>
 
@@ -6,8 +6,8 @@
 #include <iostream>
 #include <cassert>
 
-#include "../world/World.hpp"
-#include "Renderer.hpp"
+#include "../world/world.hpp"
+#include "renderer.hpp"
 
 static void APIENTRY on_opengl_log_callback(GLenum source, GLenum type, u32 id, GLenum severity, GLsizei length, const char* message, const void* user_param) {
     std::cerr << "[OpenGL] " << message << '\n';

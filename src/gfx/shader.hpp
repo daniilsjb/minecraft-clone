@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "../common/Types.hpp"
+#include "../common/types.hpp"
 
 class Shader {
 public:

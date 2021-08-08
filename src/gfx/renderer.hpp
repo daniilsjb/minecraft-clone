@@ -4,13 +4,13 @@
 
 #include <array>
 
-#include "../State.hpp"
-#include "../common/Types.hpp"
-#include "Camera.hpp"
-#include "Shader.hpp"
-#include "Texture.hpp"
-#include "VertexArray.hpp"
-#include "VertexBuffer.hpp"
+#include "../state.hpp"
+#include "../common/types.hpp"
+#include "camera.hpp"
+#include "shader.hpp"
+#include "texture.hpp"
+#include "vertex_array.hpp"
+#include "vertex_buffer.hpp"
 
 enum Shaders {
     SHADER_NONE = -1,

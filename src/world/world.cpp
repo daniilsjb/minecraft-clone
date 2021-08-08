@@ -1,7 +1,7 @@
-#include "World.hpp"
-#include "../State.hpp"
-#include "../gfx/Renderer.hpp"
-#include "../gfx/Window.hpp"
+#include "world.hpp"
+#include "../state.hpp"
+#include "../gfx/renderer.hpp"
+#include "../gfx/window.hpp"
 
 #include <ctime>
 #include <algorithm>

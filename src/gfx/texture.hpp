@@ -5,7 +5,7 @@
 #include <string>
 #include <tuple>
 
-#include "../common/Types.hpp"
+#include "../common/types.hpp"
 
 class Texture {
 public:

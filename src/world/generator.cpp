@@ -1,8 +1,8 @@
-#include "Generator.hpp"
+#include "generator.hpp"
 
 #include <db_perlin.hpp>
 
-#include "../world/World.hpp"
+#include "../world/world.hpp"
 
 static auto random(const i32 min, const i32 max) -> i32 {
     return (rand() % (max - min + 1)) + min;

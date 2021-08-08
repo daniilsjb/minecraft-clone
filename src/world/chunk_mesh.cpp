@@ -1,9 +1,9 @@
-#include "ChunkMesh.hpp"
-#include "../State.hpp"
-#include "../gfx/Renderer.hpp"
-#include "BlockMesh.hpp"
-#include "Chunk.hpp"
-#include "World.hpp"
+#include "chunk_mesh.hpp"
+#include "../state.hpp"
+#include "../gfx/renderer.hpp"
+#include "block_mesh.hpp"
+#include "chunk.hpp"
+#include "world.hpp"
 
 #include <algorithm>
 

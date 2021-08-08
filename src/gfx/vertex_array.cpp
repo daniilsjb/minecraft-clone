@@ -1,4 +1,4 @@
-#include "VertexArray.hpp"
+#include "vertex_array.hpp"
 
 VertexArray::VertexArray(const VertexBuffer& buffer, const VertexLayout& layout) {
     create();

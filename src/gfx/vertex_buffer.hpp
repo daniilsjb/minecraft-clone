@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "../common/Types.hpp"
+#include "../common/types.hpp"
 
 class VertexBuffer {
 public:

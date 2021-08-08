@@ -5,8 +5,8 @@
 #include <optional>
 #include <functional>
 
-#include "Direction.hpp"
-#include "Types.hpp"
+#include "direction.hpp"
+#include "types.hpp"
 
 struct RayHit {
     // Position of the block that the ray hit

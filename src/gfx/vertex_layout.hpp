@@ -5,7 +5,7 @@
 #include <vector>
 #include <cassert>
 
-#include "../common/Types.hpp"
+#include "../common/types.hpp"
 
 struct VertexElement {
     u32 type { 0 };

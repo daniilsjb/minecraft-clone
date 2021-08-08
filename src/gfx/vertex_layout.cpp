@@ -1,4 +1,4 @@
-#include "VertexLayout.hpp"
+#include "vertex_layout.hpp"
 
 // TODO: Maybe there is a better way to avoid shadowing warning than to use a t_ prefix
 VertexElement::VertexElement(u32 t_type, u32 t_count, u32 t_offset, bool t_normalized)

@@ -4,9 +4,9 @@
 
 #include <vector>
 
-#include "../gfx/VertexArray.hpp"
-#include "../gfx/VertexBuffer.hpp"
-#include "../common/Types.hpp"
+#include "../gfx/vertex_array.hpp"
+#include "../gfx/vertex_buffer.hpp"
+#include "../common/types.hpp"
 
 class Chunk;
 

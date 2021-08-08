@@ -1,9 +1,9 @@
-#include "Player.hpp"
-#include "../State.hpp"
-#include "../gfx/Renderer.hpp"
-#include "../gfx/Window.hpp"
-#include "../world/World.hpp"
-#include "../common//Ray.hpp"
+#include "player.hpp"
+#include "../state.hpp"
+#include "../gfx/renderer.hpp"
+#include "../gfx/window.hpp"
+#include "../world/world.hpp"
+#include "../common//ray.hpp"
 
 constexpr auto RAY_INTERSECTION = [](const glm::ivec3& position) {
     return State::world->get_block(position).id != BLOCK_AIR;
