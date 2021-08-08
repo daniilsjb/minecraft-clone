@@ -4,7 +4,6 @@
 #include "../gfx/window.hpp"
 
 #include <ctime>
-#include <algorithm>
 
 void World::create() {
     m_player.init();

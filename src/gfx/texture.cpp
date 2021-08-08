@@ -1,7 +1,6 @@
 #include <stb_image.h>
 #include <glad/glad.h>
 
-#include <iostream>
 #include <cassert>
 
 #include "texture.hpp"
@@ -70,7 +69,7 @@ void Texture::load_from_pixels(u8* pixels, u32 width, u32 height) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, i32(m_size.x), i32(m_size.y), 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_size.x, m_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 }
 
 // TODO: Find a different way to signal texture errors
@@ -83,7 +82,7 @@ void Texture::load_from_path(const std::string& path) {
         assert(("Could not load texture at specified path", false));
     }
 
-    load_from_pixels(data, width, height);
+    load_from_pixels(data, u32(width), u32(height));
     stbi_image_free(data);
 }
 

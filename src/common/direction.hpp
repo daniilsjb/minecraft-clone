@@ -1,8 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include <array>
 #include <cassert>
 
 enum Direction {

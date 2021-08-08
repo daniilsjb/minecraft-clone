@@ -1,12 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include <string>
-#include <tuple>
-
-#include "../common/types.hpp"
-
 class Texture {
 public:
     Texture();

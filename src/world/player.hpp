@@ -1,7 +1,6 @@
 #pragma once
 
 #include "block.hpp"
-#include "../common/types.hpp"
 
 class Player {
 public:

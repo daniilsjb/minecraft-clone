@@ -1,8 +1,6 @@
 #include "camera.hpp"
 
-#include <algorithm>
-
-void Camera::init(i32 width, i32 height) {
+void Camera::init(u32 width, u32 height) {
     resize(width, height);
 }
 

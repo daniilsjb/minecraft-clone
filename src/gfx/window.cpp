@@ -2,8 +2,6 @@
 
 #include <glad/glad.h>
 
-#include <algorithm>
-#include <iostream>
 #include <cassert>
 
 #include "../world/world.hpp"
@@ -70,7 +68,7 @@ static void on_glfw_error_callback(int error, const char* description) {
 }
 
 static void on_resize_callback(GLFWwindow* handle, int width, int height) {
-    reinterpret_cast<Window*>(glfwGetWindowUserPointer(handle))->on_resize(handle, width, height);
+    reinterpret_cast<Window*>(glfwGetWindowUserPointer(handle))->on_resize(handle, u32(width), u32(height));
 }
 
 static void on_key_callback(GLFWwindow* handle, int key, int scancode, int action, int mods) {

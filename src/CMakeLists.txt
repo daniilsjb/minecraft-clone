@@ -63,6 +63,26 @@ target_link_libraries(game PRIVATE
     db-perlin
 )
 
+target_precompile_headers(game PRIVATE
+    # Standard Library
+    <array>
+    <algorithm>
+    <string>
+    <optional>
+    <functional>
+    <tuple>
+    <vector>
+    <iostream>
+
+    # GLM
+    <glm/glm.hpp>
+    <glm/gtc/matrix_transform.hpp>
+    <glm/gtc/type_ptr.hpp>
+
+    # Application
+    common/types.hpp
+)
+
 # We're using a custom OpenGL extension loader library,
 # so turn off GLFW's default OpenGL header inclusion
 target_compile_definitions(game PRIVATE GLFW_INCLUDE_NONE)

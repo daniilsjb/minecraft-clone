@@ -1,12 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include <array>
-#include <functional>
-
 #include "../common/direction.hpp"
-#include "../common/types.hpp"
 
 // Unique identifier for each block type
 enum BlockId {

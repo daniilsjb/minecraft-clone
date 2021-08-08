@@ -1,10 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include "../common/types.hpp"
-
 struct Camera {
     glm::mat4 projection;
     glm::mat4 view;
@@ -23,7 +18,7 @@ struct Camera {
     f32 near { 0.01f };
     f32 far { 1000.0f };
 
-    void init(i32 width, i32 height);
+    void init(u32 width, u32 height);
     void update();
 
     void resize(u32 width, u32 height);

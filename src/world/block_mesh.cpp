@@ -1,8 +1,6 @@
 #include "block_mesh.hpp"
 #include "chunk_mesh.hpp"
 
-#include <array>
-
 constexpr std::array<f32, 8 * 3> CUBE_COORDINATES = {
     0.0f, 0.0f, 0.0f, // 0
     1.0f, 0.0f, 0.0f, // 1

@@ -5,8 +5,6 @@
 #include "chunk.hpp"
 #include "world.hpp"
 
-#include <algorithm>
-
 void ChunkMesh::create() {
     m_vbo.create(GL_ARRAY_BUFFER);
     m_ibo.create(GL_ELEMENT_ARRAY_BUFFER);

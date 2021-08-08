@@ -1,14 +1,9 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include <vector>
-#include <functional>
 #include <cmath>
 
 #include "chunk.hpp"
 #include "player.hpp"
-#include "../common/types.hpp"
 
 template<typename T = glm::ivec3>
 constexpr T WORLD_SIZE = T(16, 0, 16);

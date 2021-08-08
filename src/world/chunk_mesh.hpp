@@ -1,12 +1,7 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include <vector>
-
 #include "../gfx/vertex_array.hpp"
 #include "../gfx/vertex_buffer.hpp"
-#include "../common/types.hpp"
 
 class Chunk;
 

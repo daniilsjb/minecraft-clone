@@ -1,13 +1,10 @@
 #include "shader.hpp"
 
 #include <glad/glad.h>
-#include <glm/gtc/type_ptr.hpp>
 
 #include <cstdio>
-#include <array>
-#include <fstream>
-#include <iostream>
 #include <cassert>
+#include <fstream>
 
 Shader::Shader()
     : m_handle(0) {}

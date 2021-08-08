@@ -1,11 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include <string>
-
-#include "../common/types.hpp"
-
 class Shader {
 public:
     Shader();

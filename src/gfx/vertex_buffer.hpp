@@ -2,8 +2,6 @@
 
 #include <glad/glad.h>
 
-#include "../common/types.hpp"
-
 class VertexBuffer {
 public:
     VertexBuffer() = default;

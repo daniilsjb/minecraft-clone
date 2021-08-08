@@ -2,10 +2,7 @@
 
 #include <glad/glad.h>
 
-#include <vector>
 #include <cassert>
-
-#include "../common/types.hpp"
 
 struct VertexElement {
     u32 type { 0 };

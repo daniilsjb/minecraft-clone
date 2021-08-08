@@ -1,11 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include <array>
-
 #include "../state.hpp"
-#include "../common/types.hpp"
 #include "camera.hpp"
 #include "shader.hpp"
 #include "texture.hpp"

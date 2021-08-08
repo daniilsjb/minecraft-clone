@@ -1,13 +1,8 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-
-#include <array>
-#include <string>
 
 #include "../state.hpp"
-#include "../common/types.hpp"
 
 struct KeyState {
     bool down;     // The key is currently held down

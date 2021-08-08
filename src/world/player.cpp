@@ -3,7 +3,7 @@
 #include "../gfx/renderer.hpp"
 #include "../gfx/window.hpp"
 #include "../world/world.hpp"
-#include "../common//ray.hpp"
+#include "../common/ray.hpp"
 
 constexpr auto RAY_INTERSECTION = [](const glm::ivec3& position) {
     return State::world->get_block(position).id != BLOCK_AIR;

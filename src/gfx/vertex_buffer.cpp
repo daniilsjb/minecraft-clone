@@ -1,5 +1,3 @@
-#include <glad/glad.h>
-
 #include "vertex_buffer.hpp"
 
 VertexBuffer::VertexBuffer(u32 type) {

@@ -1,5 +1,9 @@
 #pragma once
 
+// This file will be included in each source file through the pre-compiled header,
+// and all the type definitions below will be instantly available as if they were
+// part of the language itself.
+
 #include <cstdint>
 
 using i8 = int8_t;
