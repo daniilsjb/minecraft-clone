@@ -7,30 +7,27 @@
 
 Texture::Texture()
     : m_handle(0)
-    , m_size(0, 0) {}
+    , m_size(0, 0) {
+}
 
 Texture::Texture(u8* pixels, u32 width, u32 height)
     : m_handle(0)
     , m_size(0, 0) {
-        load_from_pixels(pixels, width, height);
-    }
+    load_from_pixels(pixels, width, height);
+}
 
-Texture::Texture(const std::string& path)
+Texture::Texture(std::string_view path)
     : m_handle(0)
     , m_size(0, 0) {
-        load_from_path(path);
-    }
-
-Texture::~Texture() {
-    destroy();
+    load_from_path(path);
 }
 
 Texture::Texture(Texture&& other) noexcept
     : m_handle(other.m_handle)
     , m_size(other.m_size) {
-        other.m_handle = 0;
-        other.m_size = { 0, 0 };
-    }
+    other.m_handle = 0;
+    other.m_size = { 0, 0 };
+}
 
 Texture& Texture::operator=(Texture&& other) noexcept {
     if (this != &other) {
@@ -44,6 +41,10 @@ Texture& Texture::operator=(Texture&& other) noexcept {
     }
 
     return *this;
+}
+
+Texture::~Texture() {
+    destroy();
 }
 
 void Texture::create() {
@@ -73,11 +74,11 @@ void Texture::load_from_pixels(u8* pixels, u32 width, u32 height) {
 }
 
 // TODO: Find a different way to signal texture errors
-void Texture::load_from_path(const std::string& path) {
+void Texture::load_from_path(std::string_view path) {
     stbi_set_flip_vertically_on_load(true);
 
     int width, height, num_channels;
-    u8* data = stbi_load(path.c_str(), &width, &height, &num_channels, 0);
+    u8* data = stbi_load(path.data(), &width, &height, &num_channels, 0);
     if (data == nullptr) {
         assert(("Could not load texture at specified path", false));
     }
@@ -103,8 +104,8 @@ auto Texture::get_size() const -> glm::uvec2 {
 }
 
 auto Atlas::get_coordinates(const glm::ivec2& position) const -> AtlasCoords {
-    const auto uv_min = glm::vec2 {
-        (                     position.x) * m_sprite_size.x,
+    const auto uv_min = glm::vec2{
+        (position.x) * m_sprite_size.x,
         (m_dimensions.y - 1 - position.y) * m_sprite_size.y
     };
     const auto uv_max = uv_min + static_cast<glm::vec2>(m_sprite_size);

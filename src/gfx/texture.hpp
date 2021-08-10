@@ -2,22 +2,22 @@
 
 class Texture {
 public:
-    Texture();
-    Texture(u8* pixels, u32 width, u32 height);
-    explicit Texture(const std::string& path);
-
-    ~Texture();
+    explicit Texture();
+    explicit Texture(u8* pixels, u32 width, u32 height);
+    explicit Texture(std::string_view path);
 
     Texture(const Texture&) = delete;
     Texture& operator=(const Texture&) = delete;
 
-    Texture(Texture&& other) noexcept;
-    Texture& operator=(Texture&& other) noexcept;
+    Texture(Texture&&) noexcept;
+    Texture& operator=(Texture&&) noexcept;
+
+    ~Texture();
 
     void destroy();
 
     void load_from_pixels(u8* pixels, u32 width, u32 height);
-    void load_from_path(const std::string& path);
+    void load_from_path(std::string_view path);
 
     void bind() const;
 
@@ -48,8 +48,8 @@ public:
 
 private:
     // The size of each individual sprite within the atlas
-    glm::ivec2 m_sprite_size { 16, 16 };
+    glm::ivec2 m_sprite_size{ 16, 16 };
 
     // The number of sprites within the atlas
-    glm::ivec2 m_dimensions { 16, 16 };
+    glm::ivec2 m_dimensions{ 16, 16 };
 };

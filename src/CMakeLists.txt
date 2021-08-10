@@ -68,6 +68,7 @@ target_precompile_headers(game PRIVATE
     <array>
     <algorithm>
     <string>
+    <string_view>
     <optional>
     <functional>
     <tuple>
